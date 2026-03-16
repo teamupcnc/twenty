@@ -28,12 +28,10 @@ export class ApiService {
 
       config.baseURL = serverUrl ?? twentyConfig.apiUrl;
 
-      // Prefer OAuth token over API key
       const authToken =
         token ?? twentyConfig.applicationAccessToken ?? twentyConfig.apiKey;
 
       if (!config.headers.Authorization && authToken) {
-        // Auto-refresh if OAuth token looks expired and we have a refresh token + client ID
         if (
           !token &&
           authToken === twentyConfig.applicationAccessToken &&
@@ -114,61 +112,6 @@ export class ApiService {
       return {
         authValid: false,
         serverUp: false,
-      };
-    }
-  }
-
-  async generateApplicationToken(applicationId: string): Promise<
-    ApiResponse<{
-      applicationAccessToken: { token: string; expiresAt: string };
-      applicationRefreshToken: { token: string; expiresAt: string };
-    }>
-  > {
-    try {
-      const mutation = `
-        mutation GenerateApplicationToken($applicationId: UUID!) {
-          generateApplicationToken(applicationId: $applicationId) {
-            applicationAccessToken {
-              token
-              expiresAt
-            }
-            applicationRefreshToken {
-              token
-              expiresAt
-            }
-          }
-        }
-      `;
-
-      const response: AxiosResponse = await this.client.post(
-        '/metadata',
-        {
-          query: mutation,
-          variables: { applicationId },
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: '*/*',
-          },
-        },
-      );
-
-      if (response.data.errors) {
-        return {
-          success: false,
-          error: response.data.errors[0],
-        };
-      }
-
-      return {
-        success: true,
-        data: response.data.data.generateApplicationToken,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error,
       };
     }
   }

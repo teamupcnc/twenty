@@ -3,13 +3,12 @@ import { Fragment, Slice } from '@tiptap/pm/model';
 import type { Editor } from '@tiptap/react';
 
 import { parseEditorContent } from '@/workflow/workflow-variables/utils/parseEditorContent';
-import { useTextVariableEditor } from '../useTextVariableEditor';
+import { useTextVariableEditor } from '@/object-record/record-field/ui/form-types/hooks/useTextVariableEditor';
 
 const mockPasteEvent = (text: string) =>
   ({
     clipboardData: {
-      getData: (type: string) =>
-        type === 'text/plain' ? text : '',
+      getData: (type: string) => (type === 'text/plain' ? text : ''),
     },
   }) as unknown as ClipboardEvent;
 
@@ -26,9 +25,11 @@ const paste = (editor: Editor, text: string): boolean => {
 const content = (editor: Editor) => parseEditorContent(editor.getJSON());
 
 const countHardBreaks = (editor: Editor) =>
-  editor.getJSON().content?.[0]?.content?.filter(
-    (n: { type: string }) => n.type === 'hardBreak',
-  )?.length ?? 0;
+  editor
+    .getJSON()
+    .content?.[0]?.content?.filter(
+      (n: { type: string }) => n.type === 'hardBreak',
+    )?.length ?? 0;
 
 const setup = (
   opts: Partial<{
@@ -48,7 +49,8 @@ const setup = (
     }),
   );
 
-  if (!result.current) throw new Error('Editor not created');
+  if (result.current === null || result.current === undefined)
+    throw new Error('Editor not created');
   return { editor: result.current, unmount };
 };
 
@@ -56,9 +58,7 @@ describe('useTextVariableEditor', () => {
   let teardown: (() => void) | undefined;
   afterEach(() => teardown?.());
 
-  const use = (
-    opts: Parameters<typeof setup>[0] = {},
-  ) => {
+  const use = (opts: Parameters<typeof setup>[0] = {}) => {
     const { editor, unmount } = setup(opts);
     teardown = unmount;
     return editor;

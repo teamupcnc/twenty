@@ -97,7 +97,9 @@ export const useTextVariableEditor = ({
           tr.replaceSelection(slice);
 
           const parsedJson = parseJson<JsonValue>(tr.doc.textContent);
-          const formattedJson = JSON.stringify(parsedJson, null, 2);
+          const formattedJson = multiline
+            ? JSON.stringify(parsedJson, null, 2)
+            : JSON.stringify(parsedJson);
           const formattedDocNode = schema.nodeFromJSON(
             getInitialEditorContent(formattedJson),
           );
@@ -106,7 +108,7 @@ export const useTextVariableEditor = ({
           tr.setSelection(rootDocSelection);
           tr.replaceSelectionWith(formattedDocNode);
           const clampedPos = Math.min(originalPos, tr.doc.content.size);
-          tr.setSelection(TextSelection.create(tr.doc, clampedPos));
+          tr.setSelection(TextSelection.near(tr.doc.resolve(clampedPos)));
 
           view.dispatch(tr);
           return true;
@@ -122,8 +124,9 @@ export const useTextVariableEditor = ({
           if (inlineContent && inlineContent.size > 0) {
             tr.replaceSelection(new Slice(inlineContent, 0, 0));
             view.dispatch(tr);
+            return true;
           }
-          return true;
+          return false;
         }
 
         return false;

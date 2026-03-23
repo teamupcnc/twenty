@@ -1,0 +1,78 @@
+services:
+  - type: web
+    name: teamup-twenty-server
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./render/server.Dockerfile
+    healthCheckPath: /healthz
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: NODE_PORT
+        value: "3000"
+      - key: SERVER_URL
+        sync: false
+      - key: APP_SECRET
+        generateValue: true
+      - key: PG_DATABASE_URL
+        fromDatabase:
+          name: teamup-twenty-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: teamup-twenty-redis
+          property: connectionString
+      - key: STORAGE_TYPE
+        value: local
+      - key: DISABLE_DB_MIGRATIONS
+        value: "false"
+      - key: DISABLE_CRON_JOBS_REGISTRATION
+        value: "false"
+
+  - type: worker
+    name: teamup-twenty-worker
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./render/worker.Dockerfile
+    envVars:
+      - key: SERVER_URL
+        fromService:
+          type: web
+          name: teamup-twenty-server
+          envVarKey: SERVER_URL
+      - key: APP_SECRET
+        fromService:
+          type: web
+          name: teamup-twenty-server
+          envVarKey: APP_SECRET
+      - key: PG_DATABASE_URL
+        fromDatabase:
+          name: teamup-twenty-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: teamup-twenty-redis
+          property: connectionString
+      - key: STORAGE_TYPE
+        fromService:
+          type: web
+          name: teamup-twenty-server
+          envVarKey: STORAGE_TYPE
+      - key: DISABLE_DB_MIGRATIONS
+        value: "true"
+      - key: DISABLE_CRON_JOBS_REGISTRATION
+        value: "true"
+
+  - type: keyvalue
+    name: teamup-twenty-redis
+    plan: starter
+    maxmemoryPolicy: noeviction
+    ipAllowList: []
+
+databases:
+  - name: teamup-twenty-db
+    plan: starter
+    databaseName: default
+    ipAllowList: []

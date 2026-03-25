@@ -138,42 +138,4 @@ export const MARKETPLACE_CATALOG_INDEX: CuratedAppEntry[] = [
       },
     },
   },
-  {
-    universalIdentifier: '4ec0391d-18d5-411c-b2f3-266ddc1c3ef7',
-    sourcePackage: '@twentyhq/hello-world',
-    isFeatured: false,
-    name: 'Hello World',
-    description: 'A simple hello world app to get started with Twenty apps.',
-    author: 'Twenty',
-    websiteUrl: 'https://twenty.com',
-    richDisplayData: {
-      icon: 'IconWorld',
-      version: '0.2.2',
-      category: 'Getting Started',
-      screenshots: [],
-      aboutDescription:
-        'A minimal example app that demonstrates the Twenty app framework. Creates a PostCard object and a logic function to generate new postcards. Great starting point for building your own apps.',
-      providers: [],
-      objects: [
-        {
-          universalIdentifier: 'e2c3d4f5-0000-0000-0000-000000000001',
-          nameSingular: 'postCard',
-          namePlural: 'postCards',
-          labelSingular: 'Post Card',
-          labelPlural: 'Post Cards',
-          description: 'A simple postcard object',
-          icon: 'IconMail',
-          fields: [],
-        },
-      ],
-      fields: [],
-      logicFunctions: [
-        {
-          name: 'create-new-post-card',
-          description: 'Creates a new postcard record',
-        },
-      ],
-      frontComponents: [],
-    },
-  },
 ];

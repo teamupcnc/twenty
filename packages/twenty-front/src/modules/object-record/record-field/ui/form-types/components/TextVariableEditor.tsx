@@ -18,7 +18,7 @@ const StyledEditor = styled.div<{
   }
 
   .tiptap {
-    align-items: ${({ multiline }) => (multiline ? 'top' : 'center')};
+    align-items: ${({ multiline }) => (multiline ? 'flex-start' : 'center')};
     border: none !important;
     box-sizing: border-box;
     color: ${({ readonly }) =>

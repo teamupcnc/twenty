@@ -50,7 +50,7 @@ export const SettingsAIAgentForm = ({
 }: SettingsAIAgentFormProps) => {
   const { t } = useLingui();
 
-  const modelOptions = useAiModelOptions();
+  const { options: modelOptions } = useAiModelOptions();
 
   const noModelsAvailable = modelOptions.length === 0;
 

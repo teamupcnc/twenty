@@ -68,7 +68,7 @@ export const SettingsAgentSettingsTab = ({
   const { openModal } = useModal();
 
   const aiModels = useAtomStateValue(aiModelsState);
-  const activeModelOptions = useAiModelOptions();
+  const { options: activeModelOptions } = useAiModelOptions();
   const currentModelLabel = useAiModelLabel(formValues.modelId);
 
   const currentModel = aiModels.find((m) => m.modelId === formValues.modelId);

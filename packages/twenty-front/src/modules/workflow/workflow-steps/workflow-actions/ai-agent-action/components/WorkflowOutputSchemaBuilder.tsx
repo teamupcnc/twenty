@@ -5,12 +5,13 @@ import { type OutputSchemaField } from '@/ai/constants/OutputFieldTypeOptions';
 import { InputLabel } from '@/ui/input/components/InputLabel';
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
-import { IconPlus, IconTrash } from 'twenty-ui/display';
+import { useContext, useState } from 'react';
+import { IconChevronDown, IconPlus, IconX } from 'twenty-ui/display';
 import { LightIconButton } from 'twenty-ui/input';
+import { AnimatedExpandableContainer } from 'twenty-ui/layout';
+import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { v4 } from 'uuid';
 import { WorkflowOutputFieldTypeSelector } from './WorkflowOutputFieldTypeSelector';
-import { themeCssVariables, ThemeContext } from 'twenty-ui/theme-constants';
-import { useContext } from 'react';
 type WorkflowOutputSchemaBuilderProps = {
   fields: OutputSchemaField[];
   onChange: (fields: OutputSchemaField[]) => void;
@@ -31,7 +32,7 @@ const StyledFieldsContainer = styled.div`
 const StyledOutputSchemaFieldContainer = styled.div`
   background-color: ${themeCssVariables.background.transparent.lighter};
   border: 1px solid ${themeCssVariables.border.color.light};
-  border-radius: ${themeCssVariables.border.radius.md};
+  border-radius: ${themeCssVariables.border.radius.sm};
   display: flex;
   flex-direction: column;
   gap: ${themeCssVariables.spacing[1]};
@@ -44,26 +45,35 @@ const StyledSettingsContent = styled.div`
   padding: ${themeCssVariables.spacing[3]};
 `;
 
-const StyledSettingsHeader = styled.div`
-  border-bottom: 1px solid ${themeCssVariables.border.color.light};
+const StyledSettingsHeader = styled.div<{ readonly: boolean }>`
+  align-items: center;
   display: grid;
   gap: ${themeCssVariables.spacing[1]};
-  grid-template-columns: 1fr 24px;
-  padding-bottom: ${themeCssVariables.spacing[2]};
-  padding-left: ${themeCssVariables.spacing[3]};
-  padding-right: ${themeCssVariables.spacing[2]};
+  grid-template-columns: ${({ readonly: isReadonly }) =>
+    isReadonly ? '1fr 24px' : '1fr 24px 24px'};
+  height: ${themeCssVariables.spacing[8]};
+  padding-inline: ${themeCssVariables.spacing[2]};
 `;
 
 const StyledTitleContainer = styled.div`
+  align-items: center;
   color: ${themeCssVariables.font.color.primary};
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   gap: ${themeCssVariables.spacing[1]};
-  padding-top: ${themeCssVariables.spacing[3]};
 `;
 
-const StyledCloseButtonContainer = styled.div`
-  padding-top: ${themeCssVariables.spacing[2]};
+const StyledChevronWrapper = styled.div<{ isExpanded: boolean }>`
+  align-items: center;
+  color: ${themeCssVariables.font.color.tertiary};
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  transform: ${({ isExpanded }) =>
+    isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'};
+  transition: transform
+    calc(${themeCssVariables.animation.duration.normal} * 1s) ease;
 `;
 
 const StyledAddFieldButton = styled.button`
@@ -108,6 +118,24 @@ export const WorkflowOutputSchemaBuilder = ({
 }: WorkflowOutputSchemaBuilderProps) => {
   const { theme } = useContext(ThemeContext);
 
+  const [expandedFieldIds, setExpandedFieldIds] = useState<Set<string>>(
+    () => new Set(fields.map((field) => field.id)),
+  );
+
+  const toggleField = (id: string) => {
+    setExpandedFieldIds((previousExpandedFieldIds) => {
+      const nextExpandedFieldIds = new Set(previousExpandedFieldIds);
+
+      if (nextExpandedFieldIds.has(id)) {
+        nextExpandedFieldIds.delete(id);
+      } else {
+        nextExpandedFieldIds.add(id);
+      }
+
+      return nextExpandedFieldIds;
+    });
+  };
+
   const addField = () => {
     const newField: OutputSchemaField = {
       id: v4(),
@@ -115,10 +143,22 @@ export const WorkflowOutputSchemaBuilder = ({
       description: '',
       type: 'string',
     };
+
+    setExpandedFieldIds(
+      (previousExpandedFieldIds) =>
+        new Set([...previousExpandedFieldIds, newField.id]),
+    );
+
     onChange([...fields, newField]);
   };
 
   const removeField = (id: string) => {
+    setExpandedFieldIds((previousExpandedFieldIds) => {
+      const nextExpandedFieldIds = new Set(previousExpandedFieldIds);
+      nextExpandedFieldIds.delete(id);
+      return nextExpandedFieldIds;
+    });
+
     onChange(fields.filter((field) => field.id !== id));
   };
 
@@ -148,61 +188,75 @@ export const WorkflowOutputSchemaBuilder = ({
         <StyledFieldsContainer>
           {fields.map((field, index) => {
             const fieldNumber = index + 1;
+            const isExpanded = expandedFieldIds.has(field.id);
 
             return (
               <StyledOutputSchemaFieldContainer key={field.id}>
-                <StyledSettingsHeader>
-                  <StyledTitleContainer>
-                    <span>{t`Output Field ${fieldNumber}`}</span>
+                <StyledSettingsHeader readonly={!!readonly}>
+                  <StyledTitleContainer onClick={() => toggleField(field.id)}>
+                    <span>{field.name || t`Output Field ${fieldNumber}`}</span>
                   </StyledTitleContainer>
-                  <StyledCloseButtonContainer>
-                    {!readonly && (
-                      <LightIconButton
-                        testId="close-button"
-                        Icon={IconTrash}
-                        size="small"
-                        accent="secondary"
-                        onClick={() => removeField(field.id)}
-                      />
-                    )}
-                  </StyledCloseButtonContainer>
+                  <StyledChevronWrapper
+                    isExpanded={isExpanded}
+                    onClick={() => toggleField(field.id)}
+                  >
+                    <IconChevronDown
+                      size={theme.icon.size.sm}
+                      color={theme.font.color.secondary}
+                    />
+                  </StyledChevronWrapper>
+                  {!readonly && fields.length > 1 && (
+                    <LightIconButton
+                      testId="close-button"
+                      Icon={IconX}
+                      size="small"
+                      accent="secondary"
+                      onClick={() => removeField(field.id)}
+                    />
+                  )}
                 </StyledSettingsHeader>
-                <StyledSettingsContent>
-                  <FormFieldInputContainer>
-                    <FormTextFieldInput
-                      label={t`Field Name`}
-                      placeholder={t`e.g., summary, status, count`}
-                      defaultValue={field.name}
-                      onChange={(value) =>
-                        updateField(field.id, { name: value })
-                      }
-                      readonly={readonly}
-                    />
-                  </FormFieldInputContainer>
+                <AnimatedExpandableContainer
+                  isExpanded={isExpanded}
+                  initial={false}
+                  mode="fit-content"
+                >
+                  <StyledSettingsContent>
+                    <FormFieldInputContainer>
+                      <FormTextFieldInput
+                        label={t`Field Name`}
+                        placeholder={t`e.g., summary, status, count`}
+                        defaultValue={field.name}
+                        onChange={(value) =>
+                          updateField(field.id, { name: value })
+                        }
+                        readonly={readonly}
+                      />
+                    </FormFieldInputContainer>
 
-                  <FormFieldInputContainer>
-                    <WorkflowOutputFieldTypeSelector
-                      onChange={(value) =>
-                        updateField(field.id, { type: value })
-                      }
-                      value={field.type}
-                      disabled={readonly}
-                      dropdownId={`output-field-type-selector-${field.id}`}
-                    />
-                  </FormFieldInputContainer>
+                    <FormFieldInputContainer>
+                      <WorkflowOutputFieldTypeSelector
+                        onChange={(value) =>
+                          updateField(field.id, { type: value })
+                        }
+                        value={field.type}
+                        disabled={readonly}
+                        dropdownId={`output-field-type-selector-${field.id}`}
+                      />
+                    </FormFieldInputContainer>
 
-                  <FormFieldInputContainer>
-                    <FormTextFieldInput
-                      label={t`Description`}
-                      placeholder={t`Brief explanation of this output field`}
-                      defaultValue={field.description}
-                      onChange={(value) =>
-                        updateField(field.id, { description: value })
-                      }
-                      readonly={readonly}
-                    />
-                  </FormFieldInputContainer>
-                </StyledSettingsContent>
+                    <FormFieldInputContainer>
+                      <FormTextFieldInput
+                        label={t`Description`}
+                        placeholder={t`Brief explanation of this output field`}
+                        defaultValue={field.description}
+                        onChange={(value) =>
+                          updateField(field.id, { description: value })
+                        }
+                        readonly={readonly}
+                      />
+                    </FormFieldInputContainer>
+                  </StyledSettingsContent>
+                </AnimatedExpandableContainer>
               </StyledOutputSchemaFieldContainer>
             );
           })}

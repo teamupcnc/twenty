@@ -1,27 +1,53 @@
-import { type SelectOption } from 'twenty-ui/input';
+import { t } from '@lingui/core/macro';
 import { isAutoSelectModelId } from 'twenty-shared/utils';
+import { type SelectOption } from 'twenty-ui/input';
 
 import { useWorkspaceAiModelAvailability } from '@/ai/hooks/useWorkspaceAiModelAvailability';
+import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
 import { aiModelsState } from '@/client-config/states/aiModelsState';
+import { getModelIcon } from '@/settings/admin-panel/ai/utils/getModelIcon';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 
-export const useAiModelOptions = (): SelectOption<string>[] => {
+export const useAiModelOptions = (): {
+  options: SelectOption<string>[];
+  pinnedOption?: SelectOption<string>;
+} => {
   const aiModels = useAtomStateValue(aiModelsState);
-  const { isModelEnabled } = useWorkspaceAiModelAvailability();
+  const currentWorkspace = useAtomStateValue(currentWorkspaceState);
+  const { enabledModels } = useWorkspaceAiModelAvailability();
 
-  return aiModels
-    .filter(
-      (model) => !model.isDeprecated && isModelEnabled(model.modelId, model),
-    )
+  const workspaceSmartModel = aiModels.find(
+    (model) => model.modelId === currentWorkspace?.smartModel,
+  );
+
+  const resolvedDefaultModelId = enabledModels.find(
+    (model) =>
+      model.label === workspaceSmartModel?.label &&
+      model.providerName === workspaceSmartModel?.providerName,
+  )?.modelId;
+
+  const pinnedOption = workspaceSmartModel
+    ? {
+        value: resolvedDefaultModelId ?? workspaceSmartModel.modelId,
+        label: workspaceSmartModel.label,
+        Icon: getModelIcon(
+          workspaceSmartModel.modelFamily,
+          workspaceSmartModel.providerName,
+        ),
+        contextualText: t`default`,
+      }
+    : undefined;
+
+  const options = enabledModels
+    .filter((model) => model.modelId !== resolvedDefaultModelId)
     .map((model) => ({
       value: model.modelId,
-      label: isAutoSelectModelId(model.modelId)
-        ? model.label
-        : model.modelFamilyLabel
-          ? `${model.label} (${model.modelFamilyLabel})`
-          : model.label,
+      label: model.label,
+      Icon: getModelIcon(model.modelFamily, model.providerName),
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
+
+  return { options, pinnedOption };
 };
 
 export const useAiModelLabel = (

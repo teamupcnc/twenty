@@ -1,16 +1,17 @@
 import { FormFieldInputContainer } from '@/object-record/record-field/ui/form-types/components/FormFieldInputContainer';
 import { FormTextFieldInput } from '@/object-record/record-field/ui/form-types/components/FormTextFieldInput';
 
-import { createDefaultOutputSchemaField } from '@/ai/utils/createDefaultOutputSchemaField';
 import { type OutputSchemaField } from '@/ai/constants/OutputFieldTypeOptions';
+import { createDefaultOutputSchemaField } from '@/ai/utils/createDefaultOutputSchemaField';
 import { InputLabel } from '@/ui/input/components/InputLabel';
 import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
-import { useContext, useState } from 'react';
+import { type MouseEvent, useState } from 'react';
 import { IconChevronDown, IconPlus, IconX } from 'twenty-ui/display';
 import { LightIconButton } from 'twenty-ui/input';
 import { AnimatedExpandableContainer } from 'twenty-ui/layout';
-import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
+import { MenuItem } from 'twenty-ui/navigation';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 import { WorkflowOutputFieldTypeSelector } from './WorkflowOutputFieldTypeSelector';
 type WorkflowOutputSchemaBuilderProps = {
   fields: OutputSchemaField[];
@@ -45,14 +46,17 @@ const StyledSettingsContent = styled.div`
   padding: ${themeCssVariables.spacing[3]};
 `;
 
-const StyledSettingsHeader = styled.div<{ readonly: boolean }>`
+const StyledSettingsHeader = styled.div<{
+  showRemoveFieldButton: boolean;
+}>`
   align-items: center;
+  cursor: pointer;
   display: grid;
   gap: ${themeCssVariables.spacing[1]};
-  grid-template-columns: ${({ readonly: isReadonly }) =>
-    isReadonly
-      ? `1fr ${themeCssVariables.spacing[6]}`
-      : `1fr ${themeCssVariables.spacing[6]} ${themeCssVariables.spacing[6]}`};
+  grid-template-columns: ${({ showRemoveFieldButton }) =>
+    showRemoveFieldButton
+      ? `1fr ${themeCssVariables.spacing[6]} ${themeCssVariables.spacing[6]}`
+      : `1fr ${themeCssVariables.spacing[6]}`};
   height: ${themeCssVariables.spacing[8]};
   padding-inline: ${themeCssVariables.spacing[2]};
 `;
@@ -60,43 +64,13 @@ const StyledSettingsHeader = styled.div<{ readonly: boolean }>`
 const StyledTitleContainer = styled.div`
   align-items: center;
   color: ${themeCssVariables.font.color.primary};
-  cursor: pointer;
   display: flex;
   flex-direction: row;
   gap: ${themeCssVariables.spacing[1]};
 `;
 
-const StyledChevronWrapper = styled.div<{ isExpanded: boolean }>`
-  align-items: center;
-  color: ${themeCssVariables.font.color.tertiary};
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  transform: ${({ isExpanded }) =>
-    isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'};
-  transition: transform
-    calc(${themeCssVariables.animation.duration.normal} * 1s) ease;
-`;
-
-const StyledAddFieldButton = styled.button`
-  align-items: center;
-  background-color: ${themeCssVariables.background.transparent.lighter};
-  border: 1px solid ${themeCssVariables.border.color.light};
-  border-radius: ${themeCssVariables.border.radius.sm};
-  color: ${themeCssVariables.font.color.secondary};
-  cursor: pointer;
-  display: flex;
-  font-family: inherit;
-  font-weight: ${themeCssVariables.font.weight.medium};
-  gap: ${themeCssVariables.spacing[1]};
-  justify-content: center;
+const StyledAddFieldButtonContainer = styled.div`
   margin-top: ${themeCssVariables.spacing[2]};
-  padding: ${themeCssVariables.spacing[2]};
-  width: 100%;
-
-  &:hover {
-    background-color: ${themeCssVariables.background.transparent.light};
-  }
 `;
 
 const StyledMessageContentContainer = styled.div`
@@ -118,8 +92,6 @@ export const WorkflowOutputSchemaBuilder = ({
   onChange,
   readonly,
 }: WorkflowOutputSchemaBuilderProps) => {
-  const { theme } = useContext(ThemeContext);
-
   const [expandedFieldIds, setExpandedFieldIds] = useState<Set<string>>(
     () => new Set(fields.map((field) => field.id)),
   );
@@ -159,6 +131,8 @@ export const WorkflowOutputSchemaBuilder = ({
     onChange(fields.filter((field) => field.id !== id));
   };
 
+  const showRemoveFieldButton = !readonly && fields.length > 1;
+
   const updateField = (id: string, updates: Partial<OutputSchemaField>) => {
     onChange(
       fields.map((field) =>
@@ -169,7 +143,7 @@ export const WorkflowOutputSchemaBuilder = ({
 
   return (
     <StyledOutputSchemaContainer>
-      <InputLabel>{t`AI Response Schema`}</InputLabel>
+      <InputLabel>{t`Output`}</InputLabel>
 
       {fields.length === 0 && (
         <StyledOutputSchemaFieldContainer>
@@ -183,32 +157,28 @@ export const WorkflowOutputSchemaBuilder = ({
 
       {fields.length > 0 && (
         <StyledFieldsContainer>
-          {fields.map((field, index) => {
-            const fieldNumber = index + 1;
+          {fields.map((field) => {
             const isExpanded = expandedFieldIds.has(field.id);
 
             return (
               <StyledOutputSchemaFieldContainer key={field.id}>
-                <StyledSettingsHeader readonly={!!readonly}>
-                  <StyledTitleContainer onClick={() => toggleField(field.id)}>
-                    <span>{field.name || t`Output Field ${fieldNumber}`}</span>
+                <StyledSettingsHeader
+                  showRemoveFieldButton={showRemoveFieldButton}
+                  onClick={() => toggleField(field.id)}
+                >
+                  <StyledTitleContainer>
+                    <span>{field.name || t`Untitled field`}</span>
                   </StyledTitleContainer>
-                  <StyledChevronWrapper
-                    isExpanded={isExpanded}
-                    onClick={() => toggleField(field.id)}
-                  >
-                    <IconChevronDown
-                      size={theme.icon.size.sm}
-                      color={theme.font.color.secondary}
-                    />
-                  </StyledChevronWrapper>
-                  {!readonly && fields.length > 1 && (
+                  <LightIconButton Icon={IconChevronDown} size="small" />
+                  {showRemoveFieldButton && (
                     <LightIconButton
-                      testId="close-button"
+                      testId="remove-output-field-button"
                       Icon={IconX}
                       size="small"
-                      accent="secondary"
-                      onClick={() => removeField(field.id)}
+                      onClick={(event: MouseEvent<HTMLButtonElement>) => {
+                        event.stopPropagation();
+                        removeField(field.id);
+                      }}
                     />
                   )}
                 </StyledSettingsHeader>
@@ -220,7 +190,7 @@ export const WorkflowOutputSchemaBuilder = ({
                   <StyledSettingsContent>
                     <FormFieldInputContainer>
                       <FormTextFieldInput
-                        label={t`Field Name`}
+                        label={t`Variable Name`}
                         placeholder={t`e.g., summary, status, count`}
                         defaultValue={field.name}
                         onChange={(value) =>
@@ -243,7 +213,7 @@ export const WorkflowOutputSchemaBuilder = ({
 
                     <FormFieldInputContainer>
                       <FormTextFieldInput
-                        label={t`Description`}
+                        label={t`Instruction for AI`}
                         placeholder={t`Brief explanation of this output field`}
                         defaultValue={field.description}
                         onChange={(value) =>
@@ -261,10 +231,13 @@ export const WorkflowOutputSchemaBuilder = ({
       )}
 
       {!readonly && (
-        <StyledAddFieldButton onClick={addField}>
-          <IconPlus size={theme.icon.size.sm} />
-          {t`Add Output Field`}
-        </StyledAddFieldButton>
+        <StyledAddFieldButtonContainer>
+          <MenuItem
+            LeftIcon={IconPlus}
+            text={t`Add Output Field`}
+            onClick={addField}
+          />
+        </StyledAddFieldButtonContainer>
       )}
     </StyledOutputSchemaContainer>
   );

@@ -16,6 +16,11 @@ export class MarketplaceAppDetailDTO {
   @IsString()
   @IsNotEmpty()
   @Field()
+  id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Field()
   name: string;
 
   @Field(() => ApplicationRegistrationSourceType)

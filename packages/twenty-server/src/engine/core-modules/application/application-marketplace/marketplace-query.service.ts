@@ -99,12 +99,12 @@ export class MarketplaceQueryService {
     registration: ApplicationRegistrationEntity,
   ): MarketplaceAppDetailDTO {
     return {
+      id: registration.id,
       universalIdentifier: registration.universalIdentifier,
       name: registration.name,
       sourceType: registration.sourceType,
       sourcePackage: registration.sourcePackage ?? undefined,
-      latestAvailableVersion:
-        registration.latestAvailableVersion ?? undefined,
+      latestAvailableVersion: registration.latestAvailableVersion ?? undefined,
       isListed: registration.isListed,
       isFeatured: registration.isFeatured,
       manifest: registration.manifest ?? undefined,

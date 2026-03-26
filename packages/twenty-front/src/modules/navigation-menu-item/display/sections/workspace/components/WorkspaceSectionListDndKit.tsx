@@ -107,7 +107,7 @@ export const WorkspaceSectionListDndKit = ({
           <NavigationMenuItemOrphanDropTarget
             index={orphanAppendDndIndex}
             compact={!isAddMenuItemButtonVisible}
-          highlightPosition="top"
+            highlightPosition="top"
           >
             {isAddMenuItemButtonVisible && (
               <WorkspaceSectionAddMenuItemButton />

@@ -77,10 +77,8 @@ export class ApplicationDevelopmentResolver {
     @Args() { universalIdentifier, name }: CreateDevelopmentApplicationInput,
     @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
   ): Promise<DevelopmentApplicationDTO> {
-    const applicationRegistrationId = await this.findApplicationRegistrationId(
-      universalIdentifier,
-      workspaceId,
-    );
+    const applicationRegistrationId =
+      await this.findApplicationRegistrationId(universalIdentifier);
 
     const existing = await this.applicationService.findByUniversalIdentifier({
       universalIdentifier,
@@ -133,7 +131,6 @@ export class ApplicationDevelopmentResolver {
   ): Promise<WorkspaceMigrationDTO> {
     const applicationRegistrationId = await this.findApplicationRegistrationId(
       manifest.application.universalIdentifier,
-      workspaceId,
     );
 
     const application = await this.applicationService.findByUniversalIdentifier(
@@ -225,7 +222,6 @@ export class ApplicationDevelopmentResolver {
 
   private async findApplicationRegistrationId(
     universalIdentifier: string,
-    workspaceId: string,
   ): Promise<string> {
     const existingRegistration =
       await this.applicationRegistrationService.findOneByUniversalIdentifier(
@@ -239,19 +235,6 @@ export class ApplicationDevelopmentResolver {
       );
     }
 
-    const isOwner =
-      await this.applicationRegistrationService.isOwnedByWorkspace(
-        existingRegistration.id,
-        workspaceId,
-      );
-
-    if (!isOwner) {
-      throw new ApplicationException(
-        'Cannot sync application: registration is owned by another workspace',
-        ApplicationExceptionCode.FORBIDDEN,
-      );
-    }
-
     return existingRegistration.id;
   }
 
@@ -260,29 +243,21 @@ export class ApplicationDevelopmentResolver {
     manifest: { application: ApplicationInput['manifest']['application'] },
     workspaceId: string,
   ): Promise<void> {
-    const isOwner =
-      await this.applicationRegistrationService.isOwnedByWorkspace(
-        applicationRegistrationId,
-        workspaceId,
-      );
-
-    if (isOwner) {
-      await this.applicationRegistrationService.update(
-        {
-          id: applicationRegistrationId,
-          update: {
-            name: manifest.application.displayName,
-          },
+    await this.applicationRegistrationService.update(
+      {
+        id: applicationRegistrationId,
+        update: {
+          name: manifest.application.displayName,
         },
-        workspaceId,
-      );
+      },
+      workspaceId,
+    );
 
-      if (manifest.application.serverVariables) {
-        await this.applicationRegistrationVariableService.syncVariableSchemas(
-          applicationRegistrationId,
-          manifest.application.serverVariables,
-        );
-      }
+    if (manifest.application.serverVariables) {
+      await this.applicationRegistrationVariableService.syncVariableSchemas(
+        applicationRegistrationId,
+        manifest.application.serverVariables,
+      );
     }
   }
 }

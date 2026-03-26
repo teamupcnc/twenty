@@ -1,3 +1,4 @@
+import { LazyMarkdownRenderer } from '@/ai/components/LazyMarkdownRenderer';
 import { useInstallMarketplaceApp } from '@/marketplace/hooks/useInstallMarketplaceApp';
 import { SettingsPageContainer } from '@/settings/components/SettingsPageContainer';
 import { useHasPermissionFlag } from '@/settings/roles/hooks/useHasPermissionFlag';
@@ -13,25 +14,20 @@ import { type Manifest } from 'twenty-shared/application';
 import { SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath, isDefined } from 'twenty-shared/utils';
 import {
-  IconApps,
+  IconBook,
   IconBox,
   IconCheck,
-  IconColumns,
   IconCommand,
   IconDownload,
-  IconEye,
   IconEyeOff,
   IconFileText,
+  IconGraph,
   IconInfoCircle,
-  IconLayout,
-  IconLayoutGrid,
+  IconLego,
+  IconListDetails,
   IconLock,
-  IconList,
-  IconPhoto,
-  IconRobot,
   IconSettings,
   IconShield,
-  IconWand,
   IconWorld,
 } from 'twenty-ui/display';
 import { Button } from 'twenty-ui/input';
@@ -45,6 +41,7 @@ import {
 } from '~/generated-metadata/graphql';
 import { SettingsApplicationPermissionsTab } from '~/pages/settings/applications/tabs/SettingsApplicationPermissionsTab';
 import { SettingsAvailableApplicationDetailContentTab } from '~/pages/settings/applications/tabs/SettingsAvailableApplicationDetailContentTab';
+import { OBJECT_SETTINGS_WIDTH } from '@/settings/data-model/constants/ObjectSettings';
 
 const AVAILABLE_APPLICATION_DETAIL_ID = 'available-application-detail';
 
@@ -56,6 +53,12 @@ const StyledHeader = styled.div`
 `;
 
 const StyledHeaderLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${themeCssVariables.spacing[2]};
+`;
+
+const StyledHeaderTop = styled.div`
   align-items: center;
   display: flex;
   gap: ${themeCssVariables.spacing[3]};
@@ -67,10 +70,10 @@ const StyledLogo = styled.div`
   border-radius: ${themeCssVariables.border.radius.sm};
   display: flex;
   flex-shrink: 0;
-  height: 48px;
+  height: 24px;
   justify-content: center;
   overflow: hidden;
-  width: 48px;
+  width: 24px;
 `;
 
 const StyledLogoImage = styled.img`
@@ -92,12 +95,6 @@ const StyledLogoPlaceholder = styled.div`
   width: 32px;
 `;
 
-const StyledHeaderInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${themeCssVariables.spacing[1]};
-`;
-
 const StyledAppName = styled.div`
   color: ${themeCssVariables.font.color.primary};
   font-size: ${themeCssVariables.font.size.lg};
@@ -107,6 +104,7 @@ const StyledAppName = styled.div`
 const StyledAppDescription = styled.div`
   color: ${themeCssVariables.font.color.secondary};
   font-size: ${themeCssVariables.font.size.md};
+  font-weight: ${themeCssVariables.font.weight.regular};
 `;
 
 const StyledContentContainer = styled.div`
@@ -117,6 +115,7 @@ const StyledContentContainer = styled.div`
 const StyledMainContent = styled.div`
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 `;
 
 const StyledSidebar = styled.div`
@@ -130,6 +129,13 @@ const StyledSidebarSection = styled.div`
   &:first-of-type {
     padding-top: 0;
   }
+`;
+
+const StyledTitleContainer = styled.div`
+  width: ${() => {
+    return OBJECT_SETTINGS_WIDTH + 'px';
+  }};
+  margin-bottom: ${themeCssVariables.spacing[4]};
 `;
 
 const StyledSidebarLabel = styled.div`
@@ -301,34 +307,75 @@ export const SettingsAvailableApplicationDetails = () => {
   const aboutDescription = app?.aboutDescription ?? description;
 
   const contentEntries = [
-    { label: t`Objects`, icon: IconLayoutGrid, count: (manifest?.objects ?? []).length },
     {
-      label: t`Fields`,
-      icon: IconColumns,
-      count:
-        (manifest?.objects ?? []).reduce(
-          (sum, obj) => sum + (obj.fields?.length ?? 0),
-          0,
-        ) + (manifest?.fields ?? []).length,
+      icon: IconBox,
+      count: (manifest?.objects ?? []).length,
+      one: t`object`,
+      many: t`objects`,
     },
-    { label: t`Logic functions`, icon: IconCommand, count: (manifest?.logicFunctions ?? []).length },
-    { label: t`Front components`, icon: IconApps, count: (manifest?.frontComponents ?? []).length },
-    { label: t`Roles`, icon: IconShield, count: (manifest?.roles ?? []).length },
-    { label: t`Skills`, icon: IconWand, count: (manifest?.skills ?? []).length },
-    { label: t`Agents`, icon: IconRobot, count: (manifest?.agents ?? []).length },
-    { label: t`Views`, icon: IconEye, count: (manifest?.views ?? []).length },
-    { label: t`Navigation items`, icon: IconList, count: (manifest?.navigationMenuItems ?? []).length },
-    { label: t`Page layouts`, icon: IconLayout, count: (manifest?.pageLayouts ?? []).length },
-    { label: t`Public assets`, icon: IconPhoto, count: (manifest?.publicAssets ?? []).length },
+    {
+      icon: IconListDetails,
+      count: (manifest?.fields ?? []).length,
+      one: t`field`,
+      many: t`fields`,
+    },
+    {
+      icon: IconCommand,
+      count: (manifest?.logicFunctions ?? []).length,
+      one: t`logic function`,
+      many: t`logic functions`,
+    },
+    {
+      icon: IconGraph,
+      count: (manifest?.frontComponents ?? []).filter(
+        (fc) =>
+          !isDefined(fc.command) &&
+          fc.universalIdentifier !==
+            manifest?.application
+              .settingsCustomTabFrontComponentUniversalIdentifier,
+      ).length,
+      one: t`widget`,
+      many: t`widgets`,
+    },
+    {
+      icon: IconCommand,
+      count: (manifest?.frontComponents ?? []).filter(
+        (fc) => isDefined(fc.command) && !fc.isHeadless,
+      ).length,
+      one: t`command`,
+      many: t`commands`,
+    },
+    {
+      icon: IconShield,
+      count: (manifest?.roles ?? []).filter(
+        (role) =>
+          role.universalIdentifier !==
+          manifest?.application.defaultRoleUniversalIdentifier,
+      ).length,
+      one: t`role`,
+      many: t`roles`,
+    },
+    {
+      icon: IconBook,
+      count: (manifest?.skills ?? []).length,
+      one: t`skill`,
+      many: t`skills`,
+    },
+    {
+      icon: IconLego,
+      count: (manifest?.agents ?? []).length,
+      one: t`agent`,
+      many: t`agents`,
+    },
   ].filter((entry) => entry.count > 0);
 
   const isUnlisted = isDefined(detail) && !detail.isListed;
-  const isAlreadyInstalled = isDefined(installedAppData?.findOneApplication);
+  const installedApp = installedAppData?.findOneApplication;
+  const isAlreadyInstalled = isDefined(installedApp);
   const hasScreenshots = screenshots.length > 0;
 
   const defaultRole = manifest?.roles?.find(
-    (r) =>
-      r.universalIdentifier === app?.defaultRoleUniversalIdentifier,
+    (r) => r.universalIdentifier === app?.defaultRoleUniversalIdentifier,
   );
 
   const handleInstall = async () => {
@@ -390,7 +437,7 @@ export const SettingsAvailableApplicationDetails = () => {
                     {aboutDescription && (
                       <>
                         <StyledSectionTitle>{t`About`}</StyledSectionTitle>
-                        <StyledAboutText>{aboutDescription}</StyledAboutText>
+                        <LazyMarkdownRenderer text={aboutDescription} />
                       </>
                     )}
 
@@ -429,11 +476,21 @@ export const SettingsAvailableApplicationDetails = () => {
                   <StyledSidebarSection>
                     <StyledSidebarLabel>{t`Content`}</StyledSidebarLabel>
                     {contentEntries.map((entry) => (
-                      <StyledContentItem key={entry.label}>
+                      <StyledContentItem key={entry.one}>
                         <entry.icon size={16} />
-                        {entry.count} {entry.label.toLowerCase()}
+                        {entry.count}{' '}
+                        {entry.count === 1 ? entry.one : entry.many}
                       </StyledContentItem>
                     ))}
+                  </StyledSidebarSection>
+                )}
+
+                {isAlreadyInstalled && (
+                  <StyledSidebarSection>
+                    <StyledSidebarLabel>{t`Current`}</StyledSidebarLabel>
+                    <StyledSidebarValue>
+                      {installedApp?.version ?? t`Unknown`}
+                    </StyledSidebarValue>
                   </StyledSidebarSection>
                 )}
 
@@ -511,48 +568,51 @@ export const SettingsAvailableApplicationDetails = () => {
         },
         { children: displayName },
       ]}
+      title={
+        <StyledTitleContainer>
+          {isUnlisted && (
+            <StyledUnlistedBanner>
+              <IconEyeOff size={16} />
+              {t`This application is not listed on the marketplace. It was shared via a direct link.`}
+            </StyledUnlistedBanner>
+          )}
+          <StyledHeader>
+            <StyledHeaderLeft>
+              <StyledHeaderTop>
+                <StyledLogo>
+                  {app?.logoUrl ? (
+                    <StyledLogoImage src={app.logoUrl} alt={displayName} />
+                  ) : (
+                    <StyledLogoPlaceholder>
+                      {displayName.charAt(0).toUpperCase()}
+                    </StyledLogoPlaceholder>
+                  )}
+                </StyledLogo>
+                <StyledAppName>{displayName}</StyledAppName>
+              </StyledHeaderTop>
+              <StyledAppDescription>{description}</StyledAppDescription>
+            </StyledHeaderLeft>
+            {canInstallMarketplaceApps && (
+              <Button
+                Icon={isAlreadyInstalled ? IconCheck : IconDownload}
+                title={
+                  isAlreadyInstalled
+                    ? t`Installed`
+                    : isInstalling
+                      ? t`Installing...`
+                      : t`Install`
+                }
+                variant={isAlreadyInstalled ? 'secondary' : 'primary'}
+                accent={isAlreadyInstalled ? 'default' : 'blue'}
+                onClick={handleInstall}
+                disabled={isAlreadyInstalled || isInstalling}
+              />
+            )}
+          </StyledHeader>
+        </StyledTitleContainer>
+      }
     >
       <SettingsPageContainer>
-        {isUnlisted && (
-          <StyledUnlistedBanner>
-            <IconEyeOff size={16} />
-            {t`This application is not listed on the marketplace. It was shared via a direct link.`}
-          </StyledUnlistedBanner>
-        )}
-        <StyledHeader>
-          <StyledHeaderLeft>
-            <StyledLogo>
-              {app?.logoUrl ? (
-                <StyledLogoImage src={app.logoUrl} alt={displayName} />
-              ) : (
-                <StyledLogoPlaceholder>
-                  {displayName.charAt(0).toUpperCase()}
-                </StyledLogoPlaceholder>
-              )}
-            </StyledLogo>
-            <StyledHeaderInfo>
-              <StyledAppName>{displayName}</StyledAppName>
-              <StyledAppDescription>{description}</StyledAppDescription>
-            </StyledHeaderInfo>
-          </StyledHeaderLeft>
-          {canInstallMarketplaceApps && (
-            <Button
-              Icon={isAlreadyInstalled ? IconCheck : IconDownload}
-              title={
-                isAlreadyInstalled
-                  ? t`Installed`
-                  : isInstalling
-                    ? t`Installing...`
-                    : t`Install`
-              }
-              variant={isAlreadyInstalled ? 'secondary' : 'primary'}
-              accent={isAlreadyInstalled ? 'default' : 'blue'}
-              onClick={handleInstall}
-              disabled={isAlreadyInstalled || isInstalling}
-            />
-          )}
-        </StyledHeader>
-
         <TabList
           tabs={tabs}
           componentInstanceId={AVAILABLE_APPLICATION_DETAIL_ID}

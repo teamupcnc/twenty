@@ -67,7 +67,7 @@ import { buildObjectIdByNameMaps } from 'src/engine/metadata-modules/flat-object
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
 type DirectExecutionResult = {
-  data: Record<string, unknown> | null;
+  data?: Record<string, unknown>;
   errors?: GraphQLFormattedError[];
 };
 
@@ -250,7 +250,7 @@ export class DirectExecutionService {
 
       return { data };
     } catch (error) {
-      return { data: null, errors: [this.formatError(error, req)] };
+      return { errors: [this.formatError(error, req)] };
     }
   }
 

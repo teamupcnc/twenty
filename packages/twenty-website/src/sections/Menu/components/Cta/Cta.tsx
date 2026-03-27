@@ -18,9 +18,9 @@ export function Cta() {
       <LinkButton
         color="secondary"
         href="https://app.twenty.com/welcome"
-        label="Get started"
+        label="Log in"
         type="anchor"
-        variant="contained"
+        variant="outlined"
       />
       <LinkButton
         color="secondary"

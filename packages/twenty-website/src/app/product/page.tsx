@@ -23,22 +23,11 @@ export default function ProductPage() {
             variant="contained"
           />
         </Hero.Cta>
-        <Hero.Visual>
-          <iframe
-            src="https://app.endlesstools.io/embed/0bcf3ac2-58cf-4cd5-90bd-e8fada9816a9"
-            title="Endless Tools Editor"
-            allow="clipboard-write; encrypted-media; gyroscope; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-            style={{
-              width: '100%',
-              height: '462px',
-              border: 'none',
-              backgroundColor: theme.colors.secondary.background[5],
-              display: 'block',
-            }}
-          />
-        </Hero.Visual>
+        <Hero.Illustration
+          src="https://app.endlesstools.io/embed/0bcf3ac2-58cf-4cd5-90bd-e8fada9816a9"
+          title="Endless Tools Editor"
+          backgroundColor={theme.colors.secondary.background[5]}
+        />
 
         <TrustedBy.Root>
           <TrustedBy.Separator separator={TRUSTED_BY_DATA.separator} />

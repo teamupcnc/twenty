@@ -3,13 +3,7 @@ import { PROBLEM_DATA } from '@/app/(home)/constants/problem';
 import { THREE_CARDS_FEATURE_DATA } from '@/app/(home)/constants/three-cards-feature';
 import { THREE_CARDS_ILLUSTRATION_DATA } from '@/app/(home)/constants/three-cards-illustration';
 import { TRUSTED_BY_DATA } from '@/app/(home)/constants/trusted-by';
-import {
-  Body,
-  Eyebrow,
-  Heading,
-  Image,
-  LinkButton,
-} from '@/design-system/components';
+import { Body, Eyebrow, Heading, LinkButton } from '@/design-system/components';
 import { Pages } from '@/enums/pages';
 import { Hero } from '@/sections/Hero/components';
 import { Problem } from '@/sections/Problem/components';
@@ -32,10 +26,7 @@ export default function HomePage() {
             variant="contained"
           />
         </Hero.Cta>
-        <Hero.Visual>
-          <Image src="/images/home/hero/background.png" alt="" />
-          <Image src="/images/home/hero/foreground.png" alt="" />
-        </Hero.Visual>
+        <Hero.HomeVisual />
       </Hero.Root>
 
       <TrustedBy.Root>

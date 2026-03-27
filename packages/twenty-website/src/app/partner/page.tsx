@@ -30,22 +30,11 @@ export default function PartnerPage() {
             variant="contained"
           />
         </Hero.Cta>
-        <Hero.Visual>
-          <iframe
-            src="https://app.endlesstools.io/embed/1c6c8259-3276-4cf2-84d8-6b7e87e7ec95"
-            title="Endless Tools Editor"
-            allow="clipboard-write; encrypted-media; gyroscope; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-            style={{
-              width: '100%',
-              height: '462px',
-              border: 'none',
-              backgroundColor: theme.colors.secondary.background[100],
-              display: 'block',
-            }}
-          />
-        </Hero.Visual>
+        <Hero.Illustration
+          src="https://app.endlesstools.io/embed/1c6c8259-3276-4cf2-84d8-6b7e87e7ec95"
+          title="Endless Tools Editor"
+          backgroundColor={theme.colors.secondary.background[100]}
+        />
       </Hero.Root>
 
       <TrustedBy.Root>

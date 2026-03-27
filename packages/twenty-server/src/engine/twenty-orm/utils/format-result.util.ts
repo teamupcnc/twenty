@@ -182,8 +182,13 @@ function formatResultInternal<T>(
       continue;
     }
 
+    const formattedFieldValue = formatFieldMetadataValue(
+      value,
+      fieldMetadata.type,
+    );
+
     // @ts-expect-error legacy noImplicitAny
-    newData[key] = formatFieldMetadataValue(value, fieldMetadata.type);
+    newData[key] = detachSnapshotValue(formattedFieldValue);
   }
 
   // After assembling composite fields, handle those with missing required subfields
@@ -235,7 +240,9 @@ function formatResultInternal<T>(
       isPlainObject(rawUpdatedDateTime)
     ) {
       // @ts-expect-error legacy noImplicitAny
-      newData[dateTimeField.name] = rawUpdatedDateTime;
+      newData[dateTimeField.name] = isPlainObject(rawUpdatedDateTime)
+        ? structuredClone(rawUpdatedDateTime)
+        : rawUpdatedDateTime;
     } else {
       const stringifiedUnknownValue = stringifySafely(rawUpdatedDateTime);
 
@@ -273,6 +280,18 @@ export function getCompositeFieldMetadataMap(
       ]);
     }),
   );
+}
+
+function detachSnapshotValue(value: unknown): unknown {
+  if (!isDefined(value)) {
+    return value;
+  }
+
+  if (isPlainObject(value) || Array.isArray(value)) {
+    return structuredClone(value);
+  }
+
+  return value;
 }
 
 function formatFieldMetadataValue(

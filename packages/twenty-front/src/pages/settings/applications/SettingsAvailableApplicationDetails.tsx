@@ -501,7 +501,7 @@ export const SettingsAvailableApplicationDetails = () => {
                     )}
                     {app?.emailSupport && (
                       <StyledLink
-                        href={app.emailSupport}
+                        href={`mailto:${app.emailSupport}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

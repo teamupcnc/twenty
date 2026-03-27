@@ -1,7 +1,8 @@
 export { Body } from './Body/Body';
-export { Button } from './Button/Button';
+export { LinkButton } from './Button/LinkButton';
+export { SubmitButton } from './Button/SubmitButton';
 export { Container } from './Container/Container';
-export { CTA } from './CTA/CTA';
 export { Eyebrow } from './Eyebrow/Eyebrow';
 export { Heading } from './Heading/Heading';
 export { IconButton } from './IconButton/IconButton';
+export { Image } from './Image/Image';

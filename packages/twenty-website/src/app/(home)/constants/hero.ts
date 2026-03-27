@@ -9,13 +9,5 @@ export const HERO_DATA: HeroDataType = {
   body: {
     text: 'Twenty gives technical teams the building blocks for a custom CRM that meets complex business needs and quickly adapts as the business evolves.',
   },
-  ctas: [
-    {
-      type: 'link',
-      label: 'Get started',
-      href: 'https://app.twenty.com/welcome',
-      filled: true,
-      external: true,
-    },
-  ],
+  cta: { label: 'Get started', href: 'https://app.twenty.com/welcome' },
 };

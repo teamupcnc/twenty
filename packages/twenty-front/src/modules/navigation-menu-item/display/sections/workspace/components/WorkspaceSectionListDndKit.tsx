@@ -106,13 +106,10 @@ export const WorkspaceSectionListDndKit = ({
         >
           <NavigationMenuItemOrphanDropTarget
             index={orphanAppendDndIndex}
-            compact={!isAddMenuItemButtonVisible}
+            compact
             highlightPosition="top"
-          >
-            {isAddMenuItemButtonVisible && (
-              <WorkspaceSectionAddMenuItemButton />
-            )}
-          </NavigationMenuItemOrphanDropTarget>
+          />
+          {isAddMenuItemButtonVisible && <WorkspaceSectionAddMenuItemButton />}
         </NavigationMenuItemDroppableSlot>
       </StyledOrphanAppendSlotOverlap>
       {addToNavigationFallbackDestination?.droppableId ===

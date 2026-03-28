@@ -19,9 +19,7 @@ export class UserWorkspaceEntityCacheProviderService extends CoreEntityCacheProv
     super();
   }
 
-  async computeForCache(
-    entityId: string,
-  ): Promise<FlatUserWorkspace | null> {
+  async computeForCache(entityId: string): Promise<FlatUserWorkspace | null> {
     const entity = await this.userWorkspaceRepository.findOne({
       where: { id: entityId },
     });

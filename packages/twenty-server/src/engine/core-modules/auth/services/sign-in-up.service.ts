@@ -580,11 +580,11 @@ export class SignInUpService {
 
       await this.activateOnboardingForUser(
         {
-          user: (
-            typeof user.createdAt === 'string'
-              ? user
-              : fromAuthContextUserToFlat(user as AuthContextUserEntity)
-          ) as AuthContextUser,
+          user: (typeof user.createdAt === 'string'
+            ? user
+            : fromAuthContextUserToFlat(
+                user as AuthContextUserEntity,
+              )) as AuthContextUser,
           workspace,
           shouldShowConnectAccountStep: true,
         },

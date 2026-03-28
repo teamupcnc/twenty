@@ -15,6 +15,7 @@ import { OnboardingModule } from 'src/engine/core-modules/onboarding/onboarding.
 import { UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
 import { UserWorkspaceModule } from 'src/engine/core-modules/user-workspace/user-workspace.module';
 import { GlobalWorkspaceMemberListener } from 'src/engine/core-modules/user/services/global-workspace-member.listener';
+import { UserEntityCacheProviderService } from 'src/engine/core-modules/user/services/user-entity-cache-provider.service';
 import { WorkspaceFlatWorkspaceMemberMapCacheService } from 'src/engine/core-modules/user/services/workspace-flat-workspace-member-map-cache.service';
 import { WorkspaceMemberTranspiler } from 'src/engine/core-modules/user/services/workspace-member-transpiler.service';
 import { UserVarsModule } from 'src/engine/core-modules/user/user-vars/user-vars.module';
@@ -60,6 +61,7 @@ import { UserService } from './services/user.service';
   providers: [
     UserService,
     UserResolver,
+    UserEntityCacheProviderService,
     WorkspaceMemberTranspiler,
     WorkspaceFlatWorkspaceMemberMapCacheService,
     GlobalWorkspaceMemberListener,

@@ -9,7 +9,6 @@ import { assertIsDefinedOrThrow, isDefined } from 'twenty-shared/utils';
 import { WorkspaceActivationStatus } from 'twenty-shared/workspace';
 import { Repository } from 'typeorm';
 
-import { ApiKeyEntity } from 'src/engine/core-modules/api-key/api-key.entity';
 import { ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 import {
   AuthException,
@@ -19,7 +18,6 @@ import {
   type AccessTokenJwtPayload,
   type ApiKeyTokenJwtPayload,
   ApplicationAccessTokenJwtPayload,
-  AUTH_CONTEXT_USER_SELECT_FIELDS,
   type AuthContext,
   type AuthContextUser,
   FileTokenJwtPayloadLegacy,
@@ -29,9 +27,8 @@ import {
 } from 'src/engine/core-modules/auth/types/auth-context.type';
 import { JwtWrapperService } from 'src/engine/core-modules/jwt/services/jwt-wrapper.service';
 import { UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
-import { UserEntity } from 'src/engine/core-modules/user/user.entity';
-import { userValidator } from 'src/engine/core-modules/user/user.validate';
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
+import { CoreEntityCacheService } from 'src/engine/core-entity-cache/services/core-entity-cache.service';
 import { PermissionsService } from 'src/engine/metadata-modules/permissions/permissions.service';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
@@ -39,18 +36,13 @@ import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/works
 export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private readonly jwtWrapperService: JwtWrapperService,
-    @InjectRepository(WorkspaceEntity)
-    private readonly workspaceRepository: Repository<WorkspaceEntity>,
     @InjectRepository(ApplicationEntity)
     private readonly applicationRepository: Repository<ApplicationEntity>,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(UserWorkspaceEntity)
     private readonly userWorkspaceRepository: Repository<UserWorkspaceEntity>,
-    @InjectRepository(ApiKeyEntity)
-    private readonly apiKeyRepository: Repository<ApiKeyEntity>,
     private readonly permissionsService: PermissionsService,
     private readonly workspaceCacheService: WorkspaceCacheService,
+    private readonly coreEntityCacheService: CoreEntityCacheService,
   ) {
     const jwtFromRequestFunction = jwtWrapperService.extractJwtFromRequest();
     // @ts-expect-error legacy noImplicitAny
@@ -88,9 +80,10 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   private async validateAPIKey(
     payload: ApiKeyTokenJwtPayload,
   ): Promise<AuthContext> {
-    const workspace = await this.workspaceRepository.findOneBy({
-      id: payload.sub,
-    });
+    const workspace = await this.coreEntityCacheService.get(
+      'workspaceEntity',
+      payload.sub,
+    );
 
     assertIsDefinedOrThrow(
       workspace,
@@ -100,12 +93,12 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
       ),
     );
 
-    const apiKey = await this.apiKeyRepository.findOne({
-      where: {
-        id: payload.jti,
-        workspaceId: workspace.id,
-      },
-    });
+    const { apiKeyMap } = await this.workspaceCacheService.getOrRecompute(
+      workspace.id,
+      ['apiKeyMap'],
+    );
+
+    const apiKey = payload.jti ? apiKeyMap[payload.jti] : undefined;
 
     if (!apiKey || apiKey.revokedAt) {
       throw new AuthException(
@@ -123,9 +116,10 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
     let user: AuthContextUser | null = null;
     let context: AuthContext = {};
 
-    const workspace = await this.workspaceRepository.findOneBy({
-      id: payload.workspaceId,
-    });
+    const workspace = await this.coreEntityCacheService.get(
+      'workspaceEntity',
+      payload.workspaceId,
+    );
 
     if (!isDefined(workspace)) {
       throw new AuthException(
@@ -226,18 +220,19 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
     user: AuthContextUser;
     userWorkspace: UserWorkspaceEntity;
   } | null> {
-    const user = await this.userRepository.findOne({
-      where: { id: params.userId },
-      select: [...AUTH_CONTEXT_USER_SELECT_FIELDS],
-    });
+    const user = await this.coreEntityCacheService.get(
+      'authContextUser',
+      params.userId,
+    );
 
     if (!isDefined(user)) {
       return null;
     }
 
-    const userWorkspace = await this.userWorkspaceRepository.findOne({
-      where: { id: params.userWorkspaceId },
-    });
+    const userWorkspace = await this.coreEntityCacheService.get(
+      'userWorkspaceEntity',
+      params.userWorkspaceId,
+    );
 
     if (!isDefined(userWorkspace)) {
       return null;
@@ -254,7 +249,6 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   private async validateImpersonation(payload: AccessTokenJwtPayload) {
-    // Validate required impersonation fields
     if (
       !payload.impersonatorUserWorkspaceId ||
       !payload.impersonatedUserWorkspaceId
@@ -282,6 +276,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
       );
     }
 
+    // Impersonation validation requires relations -- not cached
     const impersonatorUserWorkspace =
       await this.userWorkspaceRepository.findOne({
         where: { id: payload.impersonatorUserWorkspaceId },
@@ -348,12 +343,12 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   private async validateWorkspaceAgnosticToken(
     payload: WorkspaceAgnosticTokenJwtPayload,
   ): Promise<AuthContext> {
-    const user = await this.userRepository.findOne({
-      where: { id: payload.sub },
-      select: [...AUTH_CONTEXT_USER_SELECT_FIELDS],
-    });
+    const user = await this.coreEntityCacheService.get(
+      'authContextUser',
+      payload.sub,
+    );
 
-    userValidator.assertIsDefinedOrThrow(
+    assertIsDefinedOrThrow(
       user,
       new AuthException('User not found', AuthExceptionCode.USER_NOT_FOUND),
     );
@@ -364,9 +359,10 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   private async validateApplicationToken(
     payload: ApplicationAccessTokenJwtPayload,
   ): Promise<AuthContext> {
-    const workspace = await this.workspaceRepository.findOneBy({
-      id: payload.workspaceId,
-    });
+    const workspace = await this.coreEntityCacheService.get(
+      'workspaceEntity',
+      payload.workspaceId,
+    );
 
     if (!isDefined(workspace)) {
       throw new AuthException(

@@ -1,17 +1,17 @@
 import { type CastRecordTypeOrmDatePropertiesToString } from 'src/engine/metadata-modules/flat-entity/types/cast-record-typeorm-date-properties-to-string.type';
-import { type USER_WORKSPACE_ENTITY_NON_COLUMN_PROPERTIES } from 'src/engine/core-modules/user-workspace/constants/user-workspace-entity-non-column-properties.constant';
+import { type USER_WORKSPACE_ENTITY_NON_CACHED_PROPERTIES } from 'src/engine/core-modules/user-workspace/constants/user-workspace-entity-non-cached-properties.constant';
 import { type UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
 
-type UserWorkspaceEntityNonColumnProperties =
-  (typeof USER_WORKSPACE_ENTITY_NON_COLUMN_PROPERTIES)[number];
+type UserWorkspaceEntityNonCachedProperties =
+  (typeof USER_WORKSPACE_ENTITY_NON_CACHED_PROPERTIES)[number];
 
-type UserWorkspaceColumnFields = Omit<
+type UserWorkspaceCachedFields = Omit<
   UserWorkspaceEntity,
-  UserWorkspaceEntityNonColumnProperties
+  UserWorkspaceEntityNonCachedProperties
 >;
 
 export type FlatUserWorkspace = Omit<
-  UserWorkspaceColumnFields,
-  keyof CastRecordTypeOrmDatePropertiesToString<UserWorkspaceColumnFields>
+  UserWorkspaceCachedFields,
+  keyof CastRecordTypeOrmDatePropertiesToString<UserWorkspaceCachedFields>
 > &
-  CastRecordTypeOrmDatePropertiesToString<UserWorkspaceColumnFields>;
+  CastRecordTypeOrmDatePropertiesToString<UserWorkspaceCachedFields>;

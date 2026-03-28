@@ -26,6 +26,7 @@ import { t } from '@lingui/core/macro';
 import { useContext, useState } from 'react';
 import { SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath } from 'twenty-shared/utils';
+import { Tag } from 'twenty-ui/components';
 import {
   H2Title,
   IconArrowUp,
@@ -128,7 +129,14 @@ export const SettingsAIUsageTab = () => {
         <H2Title
           title={t`AI Usage`}
           description={t`Track AI consumption across your workspace.`}
-          adornment={<IconLock size={16} />}
+          adornment={
+            <Tag
+              text={t`Enterprise`}
+              color="transparent"
+              Icon={IconLock}
+              variant="border"
+            />
+          }
         />
         <Card rounded>
           <SettingsOptionCardContentButton

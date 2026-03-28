@@ -24,7 +24,7 @@ import { SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath } from 'twenty-shared/utils';
 import { H2Title } from 'twenty-ui/display';
 import { Section } from 'twenty-ui/layout';
-import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
+import { ThemeContext } from 'twenty-ui/theme-constants';
 import { useQuery } from '@apollo/client/react';
 import { GetUsageAnalyticsDocument } from '~/generated-metadata/graphql';
 import { formatDate } from '~/utils/date-utils';
@@ -200,10 +200,7 @@ export const SettingsAIUsageUserDetail = () => {
   }
 
   return (
-    <SubMenuTopBarContainer
-      title={displayName}
-      links={breadcrumbLinks}
-    >
+    <SubMenuTopBarContainer title={displayName} links={breadcrumbLinks}>
       <SettingsPageContainer>
         {userDailyUsage.length === 0 && pieData.length === 0 && (
           <Section>

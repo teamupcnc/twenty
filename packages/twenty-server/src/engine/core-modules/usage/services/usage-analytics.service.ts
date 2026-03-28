@@ -52,6 +52,40 @@ const BREAKDOWN_QUERY_LIMIT = 50;
 export class UsageAnalyticsService {
   constructor(private readonly clickHouseService: ClickHouseService) {}
 
+  async getAdminAiUsageByWorkspace(params: {
+    periodStart: Date;
+    periodEnd: Date;
+    useDollarMode?: boolean;
+  }): Promise<UsageBreakdownItem[]> {
+    const aiOperationTypes = ['AI_CHAT_TOKEN', 'AI_WORKFLOW_TOKEN'];
+
+    const convert = params.useDollarMode ? toDollars : toDisplayCredits;
+
+    const query = `
+      SELECT
+        workspaceId AS key,
+        sum(creditsUsedMicro) AS creditsUsedMicro
+      FROM usageEvent
+      WHERE timestamp >= {periodStart:String}
+        AND timestamp < {periodEnd:String}
+        AND operationType IN ({operationTypes:Array(String)})
+      GROUP BY workspaceId
+      ORDER BY creditsUsedMicro DESC
+      LIMIT ${BREAKDOWN_QUERY_LIMIT}
+    `;
+
+    const rows = await this.clickHouseService.select<BreakdownRowMicro>(query, {
+      periodStart: formatDateForClickHouse(params.periodStart),
+      periodEnd: formatDateForClickHouse(params.periodEnd),
+      operationTypes: aiOperationTypes,
+    });
+
+    return rows.map((row) => ({
+      key: row.key,
+      creditsUsed: convert(row.creditsUsedMicro),
+    }));
+  }
+
   async getUsageByUser(params: PeriodParams): Promise<UsageBreakdownItem[]> {
     return this.queryBreakdown({
       ...params,
@@ -60,9 +94,7 @@ export class UsageAnalyticsService {
     });
   }
 
-  async getUsageByModel(
-    params: PeriodParams,
-  ): Promise<UsageBreakdownItem[]> {
+  async getUsageByModel(params: PeriodParams): Promise<UsageBreakdownItem[]> {
     return this.queryBreakdown({
       ...params,
       groupByField: 'resourceContext',

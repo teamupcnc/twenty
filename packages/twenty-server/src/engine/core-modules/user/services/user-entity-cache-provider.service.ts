@@ -10,7 +10,7 @@ import { fromUserEntityToFlat } from 'src/engine/core-modules/user/utils/from-us
 import { UserEntity } from 'src/engine/core-modules/user/user.entity';
 
 @Injectable()
-@CoreEntityCache('authContextUser')
+@CoreEntityCache('user')
 export class UserEntityCacheProviderService extends CoreEntityCacheProvider<FlatUser> {
   constructor(
     @InjectRepository(UserEntity)

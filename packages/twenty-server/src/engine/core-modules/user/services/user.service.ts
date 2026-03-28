@@ -161,7 +161,7 @@ export class UserService extends TypeOrmQueryService<UserEntity> {
     }
 
     await this.userRepository.softDelete({ id: userId });
-    await this.coreEntityCacheService.invalidate('authContextUser', userId);
+    await this.coreEntityCacheService.invalidate('user', userId);
 
     return await this.userRepository.findOne({
       where: {
@@ -201,7 +201,7 @@ export class UserService extends TypeOrmQueryService<UserEntity> {
 
     if (user.userWorkspaces.length === 1) {
       await this.userRepository.softDelete(userId);
-      await this.coreEntityCacheService.invalidate('authContextUser', userId);
+      await this.coreEntityCacheService.invalidate('user', userId);
     }
 
     return userWorkspace;

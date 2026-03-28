@@ -4,7 +4,7 @@ import { type FlatWorkspace } from 'src/engine/core-modules/workspace/types/flat
 
 export type CoreEntityCacheDataMap = {
   workspaceEntity: FlatWorkspace;
-  authContextUser: FlatUser;
+  user: FlatUser;
   userWorkspaceEntity: FlatUserWorkspace;
 };
 
@@ -12,6 +12,6 @@ export type CoreEntityCacheKeyName = keyof CoreEntityCacheDataMap;
 
 export const CORE_ENTITY_CACHE_KEYS: Record<CoreEntityCacheKeyName, string> = {
   workspaceEntity: 'core-entity:workspace',
-  authContextUser: 'core-entity:auth-context-user',
+  user: 'core-entity:user',
   userWorkspaceEntity: 'core-entity:user-workspace',
 };

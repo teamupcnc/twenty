@@ -228,7 +228,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
     userWorkspace: FlatUserWorkspace;
   } | null> {
     const user = await this.coreEntityCacheService.get(
-      'authContextUser',
+      'user',
       params.userId,
     );
 
@@ -351,7 +351,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
     payload: WorkspaceAgnosticTokenJwtPayload,
   ): Promise<AuthContext> {
     const user = await this.coreEntityCacheService.get(
-      'authContextUser',
+      'user',
       payload.sub,
     );
 

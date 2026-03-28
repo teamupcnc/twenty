@@ -91,7 +91,7 @@ describe('JwtAuthStrategy', () => {
           return workspaceStore[entityId] ?? null;
         }
 
-        if (keyName === 'authContextUser') {
+        if (keyName === 'user') {
           return userStore[entityId] ?? null;
         }
 
@@ -305,7 +305,7 @@ describe('JwtAuthStrategy', () => {
             return workspaceStore[entityId] ?? null;
           }
 
-          if (keyName === 'authContextUser') {
+          if (keyName === 'user') {
             return userStore[entityId] ?? null;
           }
 
@@ -504,7 +504,7 @@ describe('JwtAuthStrategy', () => {
             return workspaceStore[entityId] ?? null;
           }
 
-          if (keyName === 'authContextUser') {
+          if (keyName === 'user') {
             return userStore[entityId] ?? null;
           }
 
@@ -571,7 +571,7 @@ describe('JwtAuthStrategy', () => {
             return workspaceStore[entityId] ?? null;
           }
 
-          if (keyName === 'authContextUser') {
+          if (keyName === 'user') {
             return userStore[entityId] ?? null;
           }
 
@@ -632,7 +632,7 @@ describe('JwtAuthStrategy', () => {
             return workspaceStore[entityId] ?? null;
           }
 
-          if (keyName === 'authContextUser') {
+          if (keyName === 'user') {
             return userStore[entityId] ?? null;
           }
 
@@ -706,7 +706,7 @@ describe('JwtAuthStrategy', () => {
             return workspaceStore[entityId] ?? null;
           }
 
-          if (keyName === 'authContextUser') {
+          if (keyName === 'user') {
             return userStore[entityId] ?? null;
           }
 
@@ -814,7 +814,7 @@ describe('JwtAuthStrategy', () => {
             return workspaceStore[entityId] ?? null;
           }
 
-          if (keyName === 'authContextUser') {
+          if (keyName === 'user') {
             return userStore[entityId] ?? null;
           }
 
@@ -894,7 +894,7 @@ describe('JwtAuthStrategy', () => {
             return workspaceStore[entityId] ?? null;
           }
 
-          if (keyName === 'authContextUser') {
+          if (keyName === 'user') {
             return userStore[entityId] ?? null;
           }
 

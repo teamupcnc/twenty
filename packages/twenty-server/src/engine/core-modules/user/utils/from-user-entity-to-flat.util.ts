@@ -1,9 +1,7 @@
-import { type AuthContextUser } from 'src/engine/core-modules/auth/types/auth-context-user.type';
-import { type FlatAuthContextUser } from 'src/engine/core-modules/auth/types/flat-auth-context-user.type';
+import { type UserEntity } from 'src/engine/core-modules/user/user.entity';
+import { type FlatUser } from 'src/engine/core-modules/user/types/flat-user.type';
 
-export const fromAuthContextUserToFlat = (
-  entity: AuthContextUser,
-): FlatAuthContextUser => ({
+export const fromUserEntityToFlat = (entity: UserEntity): FlatUser => ({
   id: entity.id,
   firstName: entity.firstName,
   lastName: entity.lastName,
@@ -11,11 +9,11 @@ export const fromAuthContextUserToFlat = (
   defaultAvatarUrl: entity.defaultAvatarUrl,
   isEmailVerified: entity.isEmailVerified,
   disabled: entity.disabled,
+  passwordHash: entity.passwordHash,
   canImpersonate: entity.canImpersonate,
   canAccessFullAdminPanel: entity.canAccessFullAdminPanel,
   locale: entity.locale,
-  passwordHash: entity.passwordHash,
   createdAt: entity.createdAt.toISOString(),
   updatedAt: entity.updatedAt.toISOString(),
-  deletedAt: entity.deletedAt?.toISOString() ?? null,
+  deletedAt: entity.deletedAt?.toISOString(),
 });

@@ -38,6 +38,6 @@ export const fromWorkspaceEntityToFlat = (
   routerModel: entity.routerModel,
   createdAt: entity.createdAt.toISOString(),
   updatedAt: entity.updatedAt.toISOString(),
-  deletedAt: entity.deletedAt?.toISOString() ?? null,
+  deletedAt: entity.deletedAt?.toISOString(),
   suspendedAt: entity.suspendedAt?.toISOString() ?? null,
 });

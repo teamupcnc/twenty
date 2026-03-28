@@ -1,44 +1,17 @@
-import { type WorkspaceActivationStatus } from 'twenty-shared/workspace';
+import { type CastRecordTypeOrmDatePropertiesToString } from 'src/engine/metadata-modules/flat-entity/types/cast-record-typeorm-date-properties-to-string.type';
+import { type WORKSPACE_ENTITY_RELATION_PROPERTIES } from 'src/engine/core-modules/workspace/constants/workspace-entity-relation-properties.constant';
+import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
-import { type ModelId } from 'src/engine/metadata-modules/ai/ai-models/types/model-id.type';
+type WorkspaceEntityRelationProperties =
+  (typeof WORKSPACE_ENTITY_RELATION_PROPERTIES)[number];
 
-// Manually defined to avoid ScalarFlatEntity issues
-// with WorkspaceEntity's complex relation graph
-export type FlatWorkspace = {
-  id: string;
-  displayName?: string;
-  logo?: string;
-  logoFileId: string | null;
-  inviteHash?: string;
-  allowImpersonation: boolean;
-  isPublicInviteLinkEnabled: boolean;
-  trashRetentionDays: number;
-  eventLogRetentionDays: number;
-  activationStatus: WorkspaceActivationStatus;
-  metadataVersion: number;
-  databaseSchema: string | null;
-  subdomain: string;
-  customDomain: string | null;
-  isGoogleAuthEnabled: boolean;
-  isGoogleAuthBypassEnabled: boolean;
-  isTwoFactorAuthenticationEnforced: boolean;
-  isPasswordAuthEnabled: boolean;
-  isPasswordAuthBypassEnabled: boolean;
-  isMicrosoftAuthEnabled: boolean;
-  isMicrosoftAuthBypassEnabled: boolean;
-  isCustomDomainEnabled: boolean;
-  editableProfileFields: string[] | null;
-  defaultRoleId: string | null;
-  version: string | null;
-  fastModel: ModelId;
-  smartModel: ModelId;
-  aiAdditionalInstructions: string | null;
-  enabledAiModelIds: string[];
-  useRecommendedModels: boolean;
-  workspaceCustomApplicationId: string;
-  routerModel: ModelId;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  suspendedAt: string | null;
-};
+type WorkspaceScalarFields = Omit<
+  WorkspaceEntity,
+  WorkspaceEntityRelationProperties
+>;
+
+export type FlatWorkspace = Omit<
+  WorkspaceScalarFields,
+  keyof CastRecordTypeOrmDatePropertiesToString<WorkspaceScalarFields>
+> &
+  CastRecordTypeOrmDatePropertiesToString<WorkspaceScalarFields>;

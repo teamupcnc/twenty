@@ -17,7 +17,7 @@ import {
 import { assertIsDefinedOrThrow, isDefined } from 'twenty-shared/utils';
 import { IsNull, Repository } from 'typeorm';
 
-import { fromAuthContextUserToFlat } from 'src/engine/core-modules/auth/utils/from-auth-context-user-to-flat.util';
+import { fromUserEntityToFlat } from 'src/engine/core-modules/user/utils/from-user-entity-to-flat.util';
 import {
   AppTokenEntity,
   AppTokenType,
@@ -367,7 +367,7 @@ export class AuthService {
       ...params,
       userData: {
         type: 'existingUser',
-        existingUser: fromAuthContextUserToFlat(params.userData.existingUser),
+        existingUser: fromUserEntityToFlat(params.userData.existingUser),
       },
     });
   }

@@ -7,7 +7,7 @@ import { ApplicationService } from 'src/engine/core-modules/application/applicat
 import { type WorkspaceAuthContext } from 'src/engine/core-modules/auth/types/workspace-auth-context.type';
 import { buildApplicationAuthContext } from 'src/engine/core-modules/auth/utils/build-application-auth-context.util';
 import { buildUserAuthContext } from 'src/engine/core-modules/auth/utils/build-user-auth-context.util';
-import { fromAuthContextUserToFlat } from 'src/engine/core-modules/auth/utils/from-auth-context-user-to-flat.util';
+import { fromUserEntityToFlat } from 'src/engine/core-modules/user/utils/from-user-entity-to-flat.util';
 import { fromWorkspaceEntityToFlat } from 'src/engine/core-modules/workspace/utils/from-workspace-entity-to-flat.util';
 import { UserWorkspaceService } from 'src/engine/core-modules/user-workspace/user-workspace.service';
 import { RoleService } from 'src/engine/metadata-modules/role/role.service';
@@ -76,7 +76,7 @@ export class WorkflowExecutionContextService {
     const authContext: WorkspaceAuthContext = buildUserAuthContext({
       workspace: fromWorkspaceEntityToFlat(userWorkspace.workspace),
       userWorkspaceId: userWorkspace.id,
-      user: fromAuthContextUserToFlat(userWorkspace.user),
+      user: fromUserEntityToFlat(userWorkspace.user),
       workspaceMemberId: workspaceMember.id,
       workspaceMember,
     });

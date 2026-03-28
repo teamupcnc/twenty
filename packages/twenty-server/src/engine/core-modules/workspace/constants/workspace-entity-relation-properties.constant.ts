@@ -1,0 +1,27 @@
+import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
+
+export const WORKSPACE_ENTITY_RELATION_PROPERTIES = [
+  'logoFile',
+  'appTokens',
+  'keyValuePairs',
+  'workspaceUsers',
+  'featureFlags',
+  'approvedAccessDomains',
+  'emailingDomains',
+  'publicDomains',
+  'workspaceMembersCount',
+  'allPostgresCredentials',
+  'workspaceSSOIdentityProviders',
+  'agents',
+  'webhooks',
+  'apiKeys',
+  'views',
+  'viewFields',
+  'viewFilters',
+  'viewFilterGroups',
+  'viewGroups',
+  'viewSorts',
+  'defaultRole',
+  'workspaceCustomApplication',
+  'applications',
+] as const satisfies ReadonlyArray<keyof WorkspaceEntity>;

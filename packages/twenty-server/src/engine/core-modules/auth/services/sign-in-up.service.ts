@@ -9,7 +9,7 @@ import { Repository, type DataSource, type QueryRunner } from 'typeorm';
 import { v4 } from 'uuid';
 
 import { USER_SIGNUP_EVENT_NAME } from 'src/engine/api/graphql/workspace-query-runner/constants/user-signup-event-name.constants';
-import { fromAuthContextUserToFlat } from 'src/engine/core-modules/auth/utils/from-auth-context-user-to-flat.util';
+import { fromUserEntityToFlat } from 'src/engine/core-modules/user/utils/from-user-entity-to-flat.util';
 import { MAX_WORKSPACES_WITHOUT_ENTERPRISE_KEY } from 'src/engine/core-modules/auth/constants/max-workspaces-without-enterprise-key.constants';
 import { type AppTokenEntity } from 'src/engine/core-modules/app-token/app-token.entity';
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
@@ -23,7 +23,6 @@ import {
   hashPassword,
 } from 'src/engine/core-modules/auth/auth.util';
 import { type AuthContextUser } from 'src/engine/core-modules/auth/types/auth-context.type';
-import { type AuthContextUser as AuthContextUserEntity } from 'src/engine/core-modules/auth/types/auth-context-user.type';
 import {
   type AuthProviderWithPasswordType,
   type ExistingUserOrPartialUserWithPicture,
@@ -280,7 +279,7 @@ export class SignInUpService {
       });
 
       await this.activateOnboardingForUser({
-        user: fromAuthContextUserToFlat(user),
+        user: fromUserEntityToFlat(user),
         workspace: params.workspace,
         shouldShowConnectAccountStep: false,
       });
@@ -582,9 +581,7 @@ export class SignInUpService {
         {
           user: (typeof user.createdAt === 'string'
             ? user
-            : fromAuthContextUserToFlat(
-                user as AuthContextUserEntity,
-              )) as AuthContextUser,
+            : fromUserEntityToFlat(user as UserEntity)) as AuthContextUser,
           workspace,
           shouldShowConnectAccountStep: true,
         },

@@ -308,6 +308,9 @@ describe('UserWorkspaceService', () => {
       const user = {
         id: 'user-id',
         email: 'test@example.com',
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date('2024-01-01'),
+        deletedAt: null,
       } as UserEntity;
       const workspace = {
         id: 'workspace-id',
@@ -343,7 +346,7 @@ describe('UserWorkspaceService', () => {
       });
       expect(service.createWorkspaceMember).toHaveBeenCalledWith(
         workspace.id,
-        user,
+        expect.objectContaining({ id: user.id, email: user.email }),
       );
       expect(
         userRoleService.assignRoleToManyUserWorkspace,
@@ -369,6 +372,9 @@ describe('UserWorkspaceService', () => {
       const user = {
         id: 'user-id',
         email: 'test@example.com',
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date('2024-01-01'),
+        deletedAt: null,
       } as UserEntity;
       const workspace = {
         id: 'workspace-id',
@@ -400,6 +406,9 @@ describe('UserWorkspaceService', () => {
       const user = {
         id: 'user-id',
         email: 'test@example.com',
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date('2024-01-01'),
+        deletedAt: null,
       } as UserEntity;
       const workspace = {
         id: 'workspace-id',

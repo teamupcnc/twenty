@@ -100,7 +100,7 @@ const buildUsageEventFixtures = (): UsageEventFixture[] => {
   const userWeights = [1.0, 0.6, 0.3, 0.15];
 
   const aiModelIds = [
-    'anthropic/claude-opus-4.6',
+    'anthropic/claude-opus-4-6',
     'openai/gpt-5.4',
     'openai/gpt-5.4-mini',
     'google/gemini-2.5-pro',

@@ -22,19 +22,16 @@ export const useUsageAnalyticsData = ({
   const periodDates = getPeriodDates(period);
   const periodOptions = getPeriodOptions();
 
-  const { data, loading, previousData } = useQuery(
-    GetUsageAnalyticsDocument,
-    {
-      variables: {
-        input: {
-          ...periodDates,
-          ...(operationTypes ? { operationTypes: [...operationTypes] } : {}),
-          ...(userWorkspaceId ? { userWorkspaceId } : {}),
-        },
+  const { data, loading, previousData } = useQuery(GetUsageAnalyticsDocument, {
+    variables: {
+      input: {
+        ...periodDates,
+        ...(operationTypes ? { operationTypes: [...operationTypes] } : {}),
+        ...(userWorkspaceId ? { userWorkspaceId } : {}),
       },
-      skip,
     },
-  );
+    skip,
+  });
 
   const effectiveData = data ?? previousData;
   const analytics = effectiveData?.getUsageAnalytics;

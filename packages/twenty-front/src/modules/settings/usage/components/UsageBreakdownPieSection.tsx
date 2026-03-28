@@ -57,10 +57,7 @@ export const UsageBreakdownPieSection = ({
     return null;
   }
 
-  const total = breakdownData.reduce(
-    (sum, item) => sum + item.creditsUsed,
-    0,
-  );
+  const total = breakdownData.reduce((sum, item) => sum + item.creditsUsed, 0);
 
   const formatLabel =
     breakdownField === 'operationType'

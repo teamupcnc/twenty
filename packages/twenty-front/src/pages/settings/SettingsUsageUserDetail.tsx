@@ -145,12 +145,14 @@ export const SettingsUsageUserDetail = () => {
           title={t`Daily Usage`}
           description={t`Per-day credit consumption.`}
           userWorkspaceId={userWorkspaceId}
+          skip={!userWorkspaceId}
           chartId="user-daily"
           chartLabel={t`Credits`}
         />
         <UsageBreakdownPieSection
           title={t`Usage by Type`}
           userWorkspaceId={userWorkspaceId}
+          skip={!userWorkspaceId}
           breakdownField="operationType"
           sectionId="user-type"
         />

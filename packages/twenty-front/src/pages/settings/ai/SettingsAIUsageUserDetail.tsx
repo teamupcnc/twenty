@@ -79,6 +79,7 @@ export const SettingsAIUsageUserDetail = () => {
           description={t`Per-day AI consumption.`}
           operationTypes={AI_OPERATION_TYPES}
           userWorkspaceId={userWorkspaceId}
+          skip={!userWorkspaceId}
           chartId="ai-user-daily"
           chartLabel={t`AI Usage`}
         />
@@ -86,6 +87,7 @@ export const SettingsAIUsageUserDetail = () => {
           title={t`AI Usage by Type`}
           operationTypes={AI_OPERATION_TYPES}
           userWorkspaceId={userWorkspaceId}
+          skip={!userWorkspaceId}
           breakdownField="operationType"
           sectionId="ai-user-type"
         />
@@ -94,6 +96,7 @@ export const SettingsAIUsageUserDetail = () => {
           description={t`Breakdown across AI models.`}
           operationTypes={AI_OPERATION_TYPES}
           userWorkspaceId={userWorkspaceId}
+          skip={!userWorkspaceId}
           breakdownField="model"
           sectionId="ai-user-model"
         />

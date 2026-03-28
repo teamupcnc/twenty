@@ -1,6 +1,0 @@
-{"sessionId":"5e5624","location":"jwt.auth.strategy.ts:240","message":"userWorkspace from cache","data":{"userWorkspaceId":"20202020-1e7c-43d9-a5db-685b5069d816","locale":"en"},"timestamp":1774729353599}
-{"sessionId":"5e5624","location":"jwt.auth.strategy.ts:240","message":"userWorkspace from cache","data":{"userWorkspaceId":"20202020-1e7c-43d9-a5db-685b5069d816","locale":"en"},"timestamp":1774729360390}
-{"sessionId":"5e5624","location":"workspace-member-update-one.pre-query.hook.ts:76","message":"locale updated, about to invalidate cache","data":{"userWorkspaceId":"20202020-1e7c-43d9-a5db-685b5069d816","newLocale":"fr-FR"},"timestamp":1774729360738}
-{"sessionId":"5e5624","location":"jwt.auth.strategy.ts:240","message":"userWorkspace from cache","data":{"userWorkspaceId":"20202020-1e7c-43d9-a5db-685b5069d816","locale":"fr-FR"},"timestamp":1774729369221}
-{"sessionId":"5e5624","location":"jwt.auth.strategy.ts:240","message":"userWorkspace from cache","data":{"userWorkspaceId":"20202020-1e7c-43d9-a5db-685b5069d816","locale":"fr-FR"},"timestamp":1774729384999}
-{"sessionId":"5e5624","location":"workspace-member-update-one.pre-query.hook.ts:76","message":"locale updated, about to invalidate cache","data":{"userWorkspaceId":"20202020-1e7c-43d9-a5db-685b5069d816","newLocale":"en"},"timestamp":1774729385007}

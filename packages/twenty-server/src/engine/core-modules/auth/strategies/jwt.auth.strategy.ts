@@ -227,10 +227,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
     user: AuthContextUser;
     userWorkspace: FlatUserWorkspace;
   } | null> {
-    const user = await this.coreEntityCacheService.get(
-      'user',
-      params.userId,
-    );
+    const user = await this.coreEntityCacheService.get('user', params.userId);
 
     if (!isDefined(user)) {
       return null;
@@ -350,10 +347,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
   private async validateWorkspaceAgnosticToken(
     payload: WorkspaceAgnosticTokenJwtPayload,
   ): Promise<AuthContext> {
-    const user = await this.coreEntityCacheService.get(
-      'user',
-      payload.sub,
-    );
+    const user = await this.coreEntityCacheService.get('user', payload.sub);
 
     assertIsDefinedOrThrow(
       user,

@@ -1,16 +1,39 @@
+import { isClickHouseConfiguredState } from '@/client-config/states/isClickHouseConfiguredState';
+import { SettingsBillingLabelValueItem } from '@/settings/billing/components/internal/SettingsBillingLabelValueItem';
+import { SubscriptionInfoContainer } from '@/settings/billing/components/SubscriptionInfoContainer';
 import { UsageBreakdownPieSection } from '@/settings/usage/components/UsageBreakdownPieSection';
 import { UsageByUserTableSection } from '@/settings/usage/components/UsageByUserTableSection';
 import { UsageDailyChartSection } from '@/settings/usage/components/UsageDailyChartSection';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { t } from '@lingui/core/macro';
 import { Link } from 'react-router-dom';
 import { SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath } from 'twenty-shared/utils';
-import { SETTINGS_AI_TABS } from '~/pages/settings/ai/constants/SettingsAiTabs';
-import { IconSparkles } from 'twenty-ui/display';
+import { H2Title, IconSparkles } from 'twenty-ui/display';
 import { Button } from 'twenty-ui/input';
 import { Section } from 'twenty-ui/layout';
+import { SETTINGS_AI_TABS } from '~/pages/settings/ai/constants/SettingsAiTabs';
 
 export const SettingsUsageAnalyticsSection = () => {
+  const isClickHouseConfigured = useAtomStateValue(isClickHouseConfiguredState);
+
+  if (!isClickHouseConfigured) {
+    return (
+      <Section>
+        <H2Title
+          title={t`Usage Analytics`}
+          description={t`Credit usage breakdown for your workspace.`}
+        />
+        <SubscriptionInfoContainer>
+          <SettingsBillingLabelValueItem
+            label={t`ClickHouse Not Configured`}
+            value={t`Usage analytics requires ClickHouse. Contact your administrator.`}
+          />
+        </SubscriptionInfoContainer>
+      </Section>
+    );
+  }
+
   return (
     <>
       <UsageBreakdownPieSection

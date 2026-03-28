@@ -30,9 +30,10 @@ export const SettingsAIUsageUserDetail = () => {
 
   const displayName = userName ?? userWorkspaceId ?? '';
 
-  const hasAnyData =
-    (analytics?.userDailyUsage?.dailyUsage?.length ?? 0) > 0 ||
-    (analytics?.usageByOperationType?.length ?? 0) > 0;
+  const hasAnyData = analytics
+    ? (analytics.userDailyUsage?.dailyUsage?.length ?? 0) > 0 ||
+      analytics.usageByOperationType.length > 0
+    : false;
 
   const breadcrumbLinks = [
     {

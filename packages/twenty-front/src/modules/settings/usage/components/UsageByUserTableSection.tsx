@@ -13,6 +13,7 @@ import { Avatar, H2Title, IconChevronRight } from 'twenty-ui/display';
 import { SearchInput } from 'twenty-ui/input';
 import { Section } from 'twenty-ui/layout';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
+import { type UsageOperationType } from '~/generated-metadata/graphql';
 import { normalizeSearchText } from '~/utils/normalizeSearchText';
 
 const StyledSearchInputContainer = styled.div`
@@ -28,7 +29,7 @@ const GRID_TEMPLATE_COLUMNS = '1fr 120px 36px';
 type UsageByUserTableSectionProps = {
   title: string;
   description: string;
-  operationTypes?: readonly string[] | string[];
+  operationTypes?: UsageOperationType[];
   skip?: boolean;
   getDetailPath: (userWorkspaceId: string) => string;
   showAvatar?: boolean;
@@ -52,11 +53,15 @@ export const UsageByUserTableSection = ({
       skip,
     });
 
-  const usageByUser = analytics?.usageByUser ?? [];
-
   if (isInitialLoading) {
     return <UsageSectionSkeleton />;
   }
+
+  if (!analytics) {
+    return null;
+  }
+
+  const usageByUser = analytics.usageByUser;
 
   if (usageByUser.length === 0) {
     return null;

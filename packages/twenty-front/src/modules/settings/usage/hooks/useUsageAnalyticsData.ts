@@ -4,10 +4,13 @@ import { useState } from 'react';
 import { getPeriodDates } from '@/settings/usage/utils/getPeriodDates';
 import { getPeriodOptions } from '@/settings/usage/utils/getPeriodOptions';
 import { type PeriodPreset } from '@/settings/usage/utils/periodPreset';
-import { GetUsageAnalyticsDocument } from '~/generated-metadata/graphql';
+import {
+  GetUsageAnalyticsDocument,
+  type UsageOperationType,
+} from '~/generated-metadata/graphql';
 
 type UseUsageAnalyticsDataParams = {
-  operationTypes?: readonly string[] | string[];
+  operationTypes?: UsageOperationType[];
   userWorkspaceId?: string;
   skip?: boolean;
 };
@@ -26,7 +29,7 @@ export const useUsageAnalyticsData = ({
     variables: {
       input: {
         ...periodDates,
-        ...(operationTypes ? { operationTypes: [...operationTypes] } : {}),
+        ...(operationTypes ? { operationTypes } : {}),
         ...(userWorkspaceId ? { userWorkspaceId } : {}),
       },
     },

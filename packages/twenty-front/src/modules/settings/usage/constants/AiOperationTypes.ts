@@ -1,4 +1,6 @@
-export const AI_OPERATION_TYPES = [
-  'AI_CHAT_TOKEN',
-  'AI_WORKFLOW_TOKEN',
-] as const;
+import { UsageOperationType } from '~/generated-metadata/graphql';
+
+export const AI_OPERATION_TYPES: UsageOperationType[] = [
+  UsageOperationType.AI_CHAT_TOKEN,
+  UsageOperationType.AI_WORKFLOW_TOKEN,
+];

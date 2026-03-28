@@ -57,17 +57,19 @@ export const SettingsUsageUserDetail = () => {
     (item) => item.key === userWorkspaceId,
   )?.label;
 
-  const totalCredits =
-    analytics?.usageByOperationType?.reduce(
-      (sum, item) => sum + item.creditsUsed,
-      0,
-    ) ?? 0;
+  const totalCredits = analytics
+    ? analytics.usageByOperationType.reduce(
+        (sum, item) => sum + item.creditsUsed,
+        0,
+      )
+    : 0;
 
   const displayName = userName ?? userWorkspaceId ?? '';
 
-  const hasAnyData =
-    (analytics?.userDailyUsage?.dailyUsage?.length ?? 0) > 0 ||
-    (analytics?.usageByOperationType?.length ?? 0) > 0;
+  const hasAnyData = analytics
+    ? (analytics.userDailyUsage?.dailyUsage?.length ?? 0) > 0 ||
+      analytics.usageByOperationType.length > 0
+    : false;
 
   const breadcrumbLinks = [
     {

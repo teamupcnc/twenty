@@ -11,13 +11,14 @@ import { useContext } from 'react';
 import { H2Title } from 'twenty-ui/display';
 import { Section } from 'twenty-ui/layout';
 import { ThemeContext } from 'twenty-ui/theme-constants';
+import { type UsageOperationType } from '~/generated-metadata/graphql';
 
 type UsageBreakdownField = 'operationType' | 'model';
 
 type UsageBreakdownPieSectionProps = {
   title: string;
   description?: string;
-  operationTypes?: readonly string[] | string[];
+  operationTypes?: UsageOperationType[];
   userWorkspaceId?: string;
   skip?: boolean;
   breakdownField: UsageBreakdownField;
@@ -44,14 +45,18 @@ export const UsageBreakdownPieSection = ({
       skip,
     });
 
-  const breakdownData =
-    breakdownField === 'operationType'
-      ? (analytics?.usageByOperationType ?? [])
-      : (analytics?.usageByModel ?? []);
-
   if (isInitialLoading) {
     return <UsageSectionSkeleton />;
   }
+
+  if (!analytics) {
+    return null;
+  }
+
+  const breakdownData =
+    breakdownField === 'operationType'
+      ? analytics.usageByOperationType
+      : analytics.usageByModel;
 
   if (breakdownData.length === 0) {
     return null;

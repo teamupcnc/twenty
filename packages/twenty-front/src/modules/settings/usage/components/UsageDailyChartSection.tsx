@@ -8,6 +8,7 @@ import { Select } from '@/ui/input/components/Select';
 import { styled } from '@linaria/react';
 import { H2Title } from 'twenty-ui/display';
 import { Section } from 'twenty-ui/layout';
+import { type UsageOperationType } from '~/generated-metadata/graphql';
 import { formatDate } from '~/utils/date-utils';
 
 const StyledLineChartContainer = styled.div`
@@ -20,7 +21,7 @@ type UsageDailyChartSectionProps = {
   description: string;
   chartId: string;
   chartLabel: string;
-  operationTypes?: readonly string[] | string[];
+  operationTypes?: UsageOperationType[];
   userWorkspaceId?: string;
   skip?: boolean;
 };
@@ -41,13 +42,17 @@ export const UsageDailyChartSection = ({
       skip,
     });
 
-  const timeSeries = userWorkspaceId
-    ? (analytics?.userDailyUsage?.dailyUsage ?? [])
-    : (analytics?.timeSeries ?? []);
-
   if (isInitialLoading) {
     return <UsageSectionSkeleton />;
   }
+
+  if (!analytics) {
+    return null;
+  }
+
+  const timeSeries = userWorkspaceId
+    ? (analytics.userDailyUsage?.dailyUsage ?? [])
+    : analytics.timeSeries;
 
   if (timeSeries.length === 0) {
     return null;

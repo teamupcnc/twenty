@@ -1,5 +1,5 @@
 import { type UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
-import { type FlatUserWorkspace } from 'src/engine/core-entity-cache/types/flat-user-workspace.type';
+import { type FlatUserWorkspace } from 'src/engine/core-modules/user-workspace/types/flat-user-workspace.type';
 
 export const fromUserWorkspaceEntityToFlat = (
   entity: UserWorkspaceEntity,

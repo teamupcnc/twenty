@@ -1,13 +1,13 @@
 import { type ApplicationEntity } from 'src/engine/core-modules/application/application.entity';
 import { type AuthProviderEnum } from 'src/engine/core-modules/workspace/types/workspace.type';
-import { type FlatApiKey } from 'src/engine/core-entity-cache/types/flat-api-key.type';
-import { type FlatAuthContextUser } from 'src/engine/core-entity-cache/types/flat-auth-context-user.type';
-import { type FlatUserWorkspace } from 'src/engine/core-entity-cache/types/flat-user-workspace.type';
-import { type FlatWorkspace } from 'src/engine/core-entity-cache/types/flat-workspace.type';
+import { type FlatApiKey } from 'src/engine/core-modules/api-key/types/flat-api-key.type';
+import { type FlatAuthContextUser } from 'src/engine/core-modules/auth/types/flat-auth-context-user.type';
+import { type FlatUserWorkspace } from 'src/engine/core-modules/user-workspace/types/flat-user-workspace.type';
+import { type FlatWorkspace } from 'src/engine/core-modules/workspace/types/flat-workspace.type';
 import { type WorkspaceMemberWorkspaceEntity } from 'src/modules/workspace-member/standard-objects/workspace-member.workspace-entity';
 
 export { AUTH_CONTEXT_USER_SELECT_FIELDS } from 'src/engine/core-modules/auth/constants/auth-context-user-select-fields.constants';
-export { type FlatAuthContextUser as AuthContextUser } from 'src/engine/core-entity-cache/types/flat-auth-context-user.type';
+export { type FlatAuthContextUser as AuthContextUser } from 'src/engine/core-modules/auth/types/flat-auth-context-user.type';
 
 export type RawAuthContext = {
   user?: FlatAuthContextUser | null | undefined;

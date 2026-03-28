@@ -1,5 +1,5 @@
 import { type AuthContextUser } from 'src/engine/core-modules/auth/types/auth-context-user.type';
-import { type FlatAuthContextUser } from 'src/engine/core-entity-cache/types/flat-auth-context-user.type';
+import { type FlatAuthContextUser } from 'src/engine/core-modules/auth/types/flat-auth-context-user.type';
 
 export const fromAuthContextUserToFlat = (
   entity: AuthContextUser,

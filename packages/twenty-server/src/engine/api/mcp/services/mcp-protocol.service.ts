@@ -10,7 +10,7 @@ import { MCP_SERVER_INSTRUCTIONS } from 'src/engine/api/mcp/constants/mcp-server
 import { type JsonRpc } from 'src/engine/api/mcp/dtos/json-rpc';
 import { McpToolExecutorService } from 'src/engine/api/mcp/services/mcp-tool-executor.service';
 import { wrapJsonRpcResponse } from 'src/engine/api/mcp/utils/wrap-jsonrpc-response.util';
-import { type FlatApiKey } from 'src/engine/core-entity-cache/types/flat-api-key.type';
+import { type FlatApiKey } from 'src/engine/core-modules/api-key/types/flat-api-key.type';
 import { ApiKeyRoleService } from 'src/engine/core-modules/api-key/services/api-key-role.service';
 import { type WorkspaceAuthContext } from 'src/engine/core-modules/auth/types/workspace-auth-context.type';
 import { buildApiKeyAuthContext } from 'src/engine/core-modules/auth/utils/build-api-key-auth-context.util';
@@ -36,7 +36,7 @@ import {
   LOAD_SKILL_TOOL_NAME,
   loadSkillInputSchema,
 } from 'src/engine/core-modules/tool-provider/tools/load-skill.tool';
-import { type FlatWorkspace } from 'src/engine/core-entity-cache/types/flat-workspace.type';
+import { type FlatWorkspace } from 'src/engine/core-modules/workspace/types/flat-workspace.type';
 import { SkillService } from 'src/engine/metadata-modules/skill/skill.service';
 import { UserRoleService } from 'src/engine/metadata-modules/user-role/user-role.service';
 

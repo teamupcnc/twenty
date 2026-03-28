@@ -19,7 +19,7 @@ import {
   SdkClientException,
   SdkClientExceptionCode,
 } from 'src/engine/core-modules/sdk-client/exceptions/sdk-client.exception';
-import { FlatWorkspace } from 'src/engine/core-entity-cache/types/flat-workspace.type';
+import { FlatWorkspace } from 'src/engine/core-modules/workspace/types/flat-workspace.type';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
 const SDK_CLIENT_ARCHIVE_NAME = 'twenty-client-sdk.zip';

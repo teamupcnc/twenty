@@ -1,5 +1,5 @@
 import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
-import { type FlatWorkspace } from 'src/engine/core-entity-cache/types/flat-workspace.type';
+import { type FlatWorkspace } from 'src/engine/core-modules/workspace/types/flat-workspace.type';
 
 export const fromWorkspaceEntityToFlat = (
   entity: WorkspaceEntity,

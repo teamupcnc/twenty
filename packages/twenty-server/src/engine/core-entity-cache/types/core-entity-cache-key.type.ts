@@ -1,6 +1,6 @@
-import { type FlatAuthContextUser } from 'src/engine/core-entity-cache/types/flat-auth-context-user.type';
-import { type FlatUserWorkspace } from 'src/engine/core-entity-cache/types/flat-user-workspace.type';
-import { type FlatWorkspace } from 'src/engine/core-entity-cache/types/flat-workspace.type';
+import { type FlatAuthContextUser } from 'src/engine/core-modules/auth/types/flat-auth-context-user.type';
+import { type FlatUserWorkspace } from 'src/engine/core-modules/user-workspace/types/flat-user-workspace.type';
+import { type FlatWorkspace } from 'src/engine/core-modules/workspace/types/flat-workspace.type';
 
 export type CoreEntityCacheDataMap = {
   workspaceEntity: FlatWorkspace;

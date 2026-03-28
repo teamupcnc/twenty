@@ -311,7 +311,7 @@ describe('UserWorkspaceService', () => {
         createdAt: new Date('2024-01-01'),
         updatedAt: new Date('2024-01-01'),
         deletedAt: null,
-      } as UserEntity;
+      } as unknown as UserEntity;
       const workspace = {
         id: 'workspace-id',
         defaultRoleId: 'default-role-id',
@@ -375,7 +375,7 @@ describe('UserWorkspaceService', () => {
         createdAt: new Date('2024-01-01'),
         updatedAt: new Date('2024-01-01'),
         deletedAt: null,
-      } as UserEntity;
+      } as unknown as UserEntity;
       const workspace = {
         id: 'workspace-id',
         defaultRoleId: 'default-role-id',
@@ -409,7 +409,7 @@ describe('UserWorkspaceService', () => {
         createdAt: new Date('2024-01-01'),
         updatedAt: new Date('2024-01-01'),
         deletedAt: null,
-      } as UserEntity;
+      } as unknown as UserEntity;
       const workspace = {
         id: 'workspace-id',
         defaultRoleId: undefined,

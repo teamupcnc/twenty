@@ -140,7 +140,7 @@ describe('WorkspaceAgnosticToken', () => {
         createdAt: new Date('2024-01-01'),
         updatedAt: new Date('2024-01-01'),
         deletedAt: null,
-      };
+      } as unknown as UserEntity;
 
       jest.spyOn(jwtWrapperService, 'decode').mockReturnValue(mockPayload);
       jest.spyOn(jwtWrapperService, 'verify').mockReturnValue({});

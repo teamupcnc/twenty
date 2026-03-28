@@ -12,4 +12,7 @@ export class UsageAnalyticsInput {
 
   @Field(() => String, { nullable: true })
   userWorkspaceId?: string;
+
+  @Field(() => [String], { nullable: true })
+  operationTypes?: string[];
 }

@@ -99,19 +99,36 @@ const buildUsageEventFixtures = (): UsageEventFixture[] => {
   // Weight per user so the breakdown isn't uniform
   const userWeights = [1.0, 0.6, 0.3, 0.15];
 
+  const aiModelIds = [
+    'anthropic/claude-sonnet-4-20250514',
+    'openai/gpt-5.2-codex',
+    'openai/gpt-5.1-codex-mini',
+    'google/gemini-2.5-pro-preview-05-06',
+  ];
+
   const operations: {
     resourceType: string;
     operationType: string;
     baseCreditsMicro: number;
     baseQuantity: number;
     unit: string;
+    modelIds?: string[];
   }[] = [
     {
       resourceType: 'AI',
-      operationType: 'AI_TOKEN',
+      operationType: 'AI_CHAT_TOKEN',
       baseCreditsMicro: 5000,
       baseQuantity: 1200,
       unit: 'TOKEN',
+      modelIds: aiModelIds,
+    },
+    {
+      resourceType: 'AI',
+      operationType: 'AI_WORKFLOW_TOKEN',
+      baseCreditsMicro: 3500,
+      baseQuantity: 800,
+      unit: 'TOKEN',
+      modelIds: aiModelIds,
     },
     {
       resourceType: 'WORKFLOW',
@@ -186,6 +203,10 @@ const buildUsageEventFixtures = (): UsageEventFixture[] => {
 
           const jitter = 0.5 + nextRandom();
 
+          const resourceContext = op.modelIds
+            ? op.modelIds[Math.floor(nextRandom() * op.modelIds.length)]
+            : '';
+
           fixtures.push({
             timestamp: formatDateForClickHouse(eventDate),
             workspaceId: SEED_APPLE_WORKSPACE_ID,
@@ -196,7 +217,7 @@ const buildUsageEventFixtures = (): UsageEventFixture[] => {
             unit: op.unit,
             creditsUsedMicro: Math.round(op.baseCreditsMicro * jitter),
             resourceId: '',
-            resourceContext: '',
+            resourceContext,
             metadata: {},
           });
         }

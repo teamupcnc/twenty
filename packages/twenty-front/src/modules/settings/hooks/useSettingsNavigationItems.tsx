@@ -171,7 +171,7 @@ const useSettingsNavigationItems = (): SettingsNavigationSection[] => {
           Icon: IconChartBar,
           isHidden:
             !isUsageAnalyticsEnabled ||
-            isBillingEnabled ||
+            !isBillingEnabled ||
             !permissionMap[PermissionFlagType.WORKSPACE],
         },
         {

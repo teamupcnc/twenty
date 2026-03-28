@@ -145,6 +145,14 @@ export class UsageAnalyticsService {
     extraWhere?: string;
     extraParams?: Record<string, unknown>;
   }): Promise<UsageBreakdownItem[]> {
+    if (
+      !ALLOWED_GROUP_BY_FIELDS.includes(
+        groupByField as (typeof ALLOWED_GROUP_BY_FIELDS)[number],
+      )
+    ) {
+      throw new Error(`Invalid groupByField: ${groupByField}`);
+    }
+
     const opTypeFilter =
       operationTypes && operationTypes.length > 0
         ? 'AND operationType IN ({operationTypes:Array(String)})'

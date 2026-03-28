@@ -13,10 +13,6 @@ import { CacheStorageNamespace } from 'src/engine/core-modules/cache-storage/typ
 import { PromiseMemoizer } from 'src/engine/twenty-orm/storage/promise-memoizer.storage';
 import { CORE_ENTITY_CACHE_KEY } from 'src/engine/core-entity-cache/decorators/core-entity-cache.decorator';
 import {
-  CoreEntityCacheException,
-  CoreEntityCacheExceptionCode,
-} from 'src/engine/core-entity-cache/exceptions/core-entity-cache.exception';
-import {
   CORE_ENTITY_CACHE_KEYS,
   CoreEntityCacheKeyName,
   type CoreEntityCacheDataMap,
@@ -89,10 +85,7 @@ export class CoreEntityCacheService implements OnModuleInit {
     this.evictExpiredLocalEntries();
 
     if (!isDefined(entityId) || !isValidUuid(entityId)) {
-      throw new CoreEntityCacheException(
-        'Invalid parameters: entity ID is required and must be a valid UUID',
-        CoreEntityCacheExceptionCode.INVALID_PARAMETERS,
-      );
+      return null;
     }
 
     const memoKey = `${cacheKeyName}-${entityId}` as const;
@@ -171,6 +164,7 @@ export class CoreEntityCacheService implements OnModuleInit {
   ): Promise<void> {
     await this.memoizer.clearKeys(`${cacheKeyName}-${entityId}`);
     await this.flush(entityId, cacheKeyName);
+    await this.memoizer.clearKeys(`${cacheKeyName}-${entityId}`);
   }
 
   public async invalidateAndRecompute(

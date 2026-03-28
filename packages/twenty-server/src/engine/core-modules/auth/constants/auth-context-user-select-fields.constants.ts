@@ -14,4 +14,5 @@ export const AUTH_CONTEXT_USER_SELECT_FIELDS = [
   'updatedAt',
   'deletedAt',
   'locale',
+  'passwordHash',
 ] as const satisfies ReadonlyArray<keyof UserEntity>;

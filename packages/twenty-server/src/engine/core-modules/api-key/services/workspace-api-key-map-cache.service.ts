@@ -5,13 +5,15 @@ import { Repository } from 'typeorm';
 
 import { WorkspaceCacheProvider } from 'src/engine/workspace-cache/interfaces/workspace-cache-provider.service';
 
+import { type FlatApiKeyEntity } from 'src/engine/core-entity-cache/types/flat-api-key-entity.type';
+import { fromApiKeyEntityToFlat } from 'src/engine/core-entity-cache/utils/from-api-key-entity-to-flat.util';
 import { ApiKeyEntity } from 'src/engine/core-modules/api-key/api-key.entity';
 import { WorkspaceCache } from 'src/engine/workspace-cache/decorators/workspace-cache.decorator';
 
 @Injectable()
 @WorkspaceCache('apiKeyMap')
 export class WorkspaceApiKeyMapCacheService extends WorkspaceCacheProvider<
-  Record<string, ApiKeyEntity>
+  Record<string, FlatApiKeyEntity>
 > {
   constructor(
     @InjectRepository(ApiKeyEntity)
@@ -22,18 +24,18 @@ export class WorkspaceApiKeyMapCacheService extends WorkspaceCacheProvider<
 
   async computeForCache(
     workspaceId: string,
-  ): Promise<Record<string, ApiKeyEntity>> {
+  ): Promise<Record<string, FlatApiKeyEntity>> {
     const apiKeys = await this.apiKeyRepository.find({
       where: { workspaceId },
     });
 
     return apiKeys.reduce(
       (map, apiKey) => {
-        map[apiKey.id] = apiKey;
+        map[apiKey.id] = fromApiKeyEntityToFlat(apiKey);
 
         return map;
       },
-      {} as Record<string, ApiKeyEntity>,
+      {} as Record<string, FlatApiKeyEntity>,
     );
   }
 }

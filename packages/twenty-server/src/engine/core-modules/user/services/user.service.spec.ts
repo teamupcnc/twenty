@@ -6,6 +6,7 @@ import { type Repository, type UpdateResult } from 'typeorm';
 
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
 import { AuthException } from 'src/engine/core-modules/auth/auth.exception';
+import { type AuthContextUser } from 'src/engine/core-modules/auth/types/auth-context.type';
 import { WorkspaceDomainsService } from 'src/engine/core-modules/domain/workspace-domains/services/workspace-domains.service';
 import { EmailVerificationService } from 'src/engine/core-modules/email-verification/services/email-verification.service';
 import { MessageQueue } from 'src/engine/core-modules/message-queue/message-queue.constants';
@@ -121,7 +122,7 @@ describe('UserService', () => {
       // isWorkspaceActiveOrSuspendedSpy.mockReturnValue(false);
 
       const res = await service.loadWorkspaceMember(
-        { id: 'u1' } as UserEntity,
+        { id: 'u1' } as Pick<AuthContextUser, 'id'>,
         { id: 'w1' } as WorkspaceEntity,
       );
 
@@ -140,7 +141,7 @@ describe('UserService', () => {
         .mockResolvedValue(mockWorkspaceMemberRepo);
 
       const res = await service.loadWorkspaceMember(
-        { id: 'u1' } as UserEntity,
+        { id: 'u1' } as Pick<AuthContextUser, 'id'>,
         {
           id: 'w1',
           activationStatus: WorkspaceActivationStatus.ACTIVE,

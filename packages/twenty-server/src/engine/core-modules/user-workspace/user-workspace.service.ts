@@ -24,6 +24,8 @@ import { FileService } from 'src/engine/core-modules/file/services/file.service'
 import { OnboardingService } from 'src/engine/core-modules/onboarding/onboarding.service';
 import { UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
 import { type AuthContextUser } from 'src/engine/core-modules/auth/types/auth-context.type';
+import { type AuthContextUser as AuthContextUserEntity } from 'src/engine/core-modules/auth/types/auth-context-user.type';
+import { fromAuthContextUserToFlat } from 'src/engine/core-entity-cache/utils/from-auth-context-user-to-flat.util';
 import { UserEntity } from 'src/engine/core-modules/user/user.entity';
 import { WorkspaceInvitationService } from 'src/engine/core-modules/workspace-invitation/services/workspace-invitation.service';
 import { AuthProviderEnum } from 'src/engine/core-modules/workspace/types/workspace.type';
@@ -147,7 +149,7 @@ export class UserWorkspaceService extends TypeOrmQueryService<UserWorkspaceEntit
   }
 
   async addUserToWorkspaceIfUserNotInWorkspace(
-    user: UserEntity,
+    user: UserEntity | AuthContextUser,
     workspace: WorkspaceEntity,
     roleId?: string | null,
   ) {
@@ -171,7 +173,13 @@ export class UserWorkspaceService extends TypeOrmQueryService<UserWorkspaceEntit
       isExistingUser: true,
     });
 
-    await this.createWorkspaceMember(workspace.id, user);
+    const flatAuthContextUser = (
+      typeof user.createdAt === 'string'
+        ? user
+        : fromAuthContextUserToFlat(user as AuthContextUserEntity)
+    ) as AuthContextUser;
+
+    await this.createWorkspaceMember(workspace.id, flatAuthContextUser);
 
     await this.userRoleService.assignRoleToManyUserWorkspace({
       workspaceId: workspace.id,

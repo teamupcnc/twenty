@@ -6,6 +6,7 @@ import { type DataSource, type Repository } from 'typeorm';
 import { type ApprovedAccessDomainEntity } from 'src/engine/core-modules/approved-access-domain/approved-access-domain.entity';
 import { ApprovedAccessDomainService } from 'src/engine/core-modules/approved-access-domain/services/approved-access-domain.service';
 import { AuthException } from 'src/engine/core-modules/auth/auth.exception';
+import { type AuthContextUser } from 'src/engine/core-modules/auth/types/auth-context.type';
 import { LoginTokenService } from 'src/engine/core-modules/auth/token/services/login-token.service';
 import { WorkspaceDomainsService } from 'src/engine/core-modules/domain/workspace-domains/services/workspace-domains.service';
 import { FeatureFlagService } from 'src/engine/core-modules/feature-flag/services/feature-flag.service';
@@ -249,7 +250,14 @@ describe('UserWorkspaceService', () => {
         lastName: 'Doe',
         defaultAvatarUrl: 'avatar-url',
         locale: 'en',
-      } as UserEntity;
+        isEmailVerified: false,
+        disabled: false,
+        canImpersonate: false,
+        canAccessFullAdminPanel: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
+        deletedAt: null,
+      } as unknown as AuthContextUser;
       const mainDataSource = {
         query: jest.fn(),
       } as unknown as DataSource;

@@ -10,6 +10,7 @@ import { assertIsDefinedOrThrow, isDefined } from 'twenty-shared/utils';
 import { Repository } from 'typeorm';
 
 import { MetadataResolver } from 'src/engine/api/graphql/graphql-config/decorators/metadata-resolver.decorator';
+import { fromAuthContextUserToFlat } from 'src/engine/core-entity-cache/utils/from-auth-context-user-to-flat.util';
 import { ApiKeyService } from 'src/engine/core-modules/api-key/services/api-key.service';
 import { AppTokenEntity } from 'src/engine/core-modules/app-token/app-token.entity';
 import { AuditService } from 'src/engine/core-modules/audit/services/audit.service';
@@ -221,7 +222,7 @@ export class AuthResolver {
       availableWorkspaces:
         await this.userWorkspaceService.setLoginTokenToAvailableWorkspacesWhenAuthProviderMatch(
           availableWorkspaces,
-          user,
+          fromAuthContextUserToFlat(user),
           AuthProviderEnum.Password,
         ),
       tokens: {
@@ -321,7 +322,7 @@ export class AuthResolver {
       availableWorkspaces:
         await this.userWorkspaceService.setLoginTokenToAvailableWorkspacesWhenAuthProviderMatch(
           availableWorkspaces,
-          user,
+          fromAuthContextUserToFlat(user),
           authProvider,
         ),
       tokens: {
@@ -412,7 +413,7 @@ export class AuthResolver {
       availableWorkspaces:
         await this.userWorkspaceService.setLoginTokenToAvailableWorkspacesWhenAuthProviderMatch(
           availableWorkspaces,
-          user,
+          fromAuthContextUserToFlat(user),
           AuthProviderEnum.Password,
         ),
       tokens: {

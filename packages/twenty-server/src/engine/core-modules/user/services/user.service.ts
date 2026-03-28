@@ -61,7 +61,10 @@ export class UserService extends TypeOrmQueryService<UserEntity> {
     super(userRepository);
   }
 
-  async loadWorkspaceMember(user: AuthContextUser, workspace: WorkspaceEntity) {
+  async loadWorkspaceMember(
+    user: Pick<AuthContextUser, 'id'>,
+    workspace: Pick<WorkspaceEntity, 'id' | 'activationStatus'>,
+  ) {
     if (!isWorkspaceActiveOrSuspended(workspace)) {
       return null;
     }
@@ -87,7 +90,10 @@ export class UserService extends TypeOrmQueryService<UserEntity> {
     );
   }
 
-  async loadWorkspaceMembers(workspace: WorkspaceEntity, withDeleted = false) {
+  async loadWorkspaceMembers(
+    workspace: Pick<WorkspaceEntity, 'id' | 'activationStatus'>,
+    withDeleted = false,
+  ) {
     if (!isWorkspaceActiveOrSuspended(workspace)) {
       return [];
     }
@@ -111,7 +117,9 @@ export class UserService extends TypeOrmQueryService<UserEntity> {
     );
   }
 
-  async loadDeletedWorkspaceMembersOnly(workspace: WorkspaceEntity) {
+  async loadDeletedWorkspaceMembersOnly(
+    workspace: Pick<WorkspaceEntity, 'id' | 'activationStatus'>,
+  ) {
     if (!isWorkspaceActiveOrSuspended(workspace)) {
       return [];
     }

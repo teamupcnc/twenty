@@ -5,6 +5,7 @@ import { addMilliseconds } from 'date-fns';
 import ms from 'ms';
 import { Repository } from 'typeorm';
 
+import { fromAuthContextUserToFlat } from 'src/engine/core-entity-cache/utils/from-auth-context-user-to-flat.util';
 import {
   AuthException,
   AuthExceptionCode,
@@ -88,7 +89,7 @@ export class WorkspaceAgnosticTokenService {
 
       userValidator.assertIsDefinedOrThrow(user);
 
-      return { user };
+      return { user: fromAuthContextUserToFlat(user) };
     } catch (error) {
       if (error instanceof AuthException) {
         throw error;

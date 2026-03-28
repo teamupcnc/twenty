@@ -33,14 +33,14 @@ import { I18nService } from 'src/engine/core-modules/i18n/i18n.service';
 import { MetricsService } from 'src/engine/core-modules/metrics/metrics.service';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
 import { type FlatAuthContextUser } from 'src/engine/core-entity-cache/types/flat-auth-context-user.type';
-import { type FlatWorkspaceEntity } from 'src/engine/core-entity-cache/types/flat-workspace-entity.type';
+import { type FlatWorkspace } from 'src/engine/core-entity-cache/types/flat-workspace.type';
 import { DataloaderService } from 'src/engine/dataloaders/dataloader.service';
 import { handleExceptionAndConvertToGraphQLError } from 'src/engine/utils/global-exception-handler.util';
 import { renderApolloPlayground } from 'src/engine/utils/render-apollo-playground.util';
 
 export interface GraphQLContext extends YogaDriverServerContext<'express'> {
   user?: FlatAuthContextUser;
-  workspace?: FlatWorkspaceEntity;
+  workspace?: FlatWorkspace;
 }
 
 @Injectable()
@@ -172,7 +172,7 @@ export class GraphQLConfigService
 
   async createSchema(
     context: YogaDriverServerContext<'express'> & YogaInitialContext,
-    workspace: FlatWorkspaceEntity,
+    workspace: FlatWorkspace,
     applicationId?: string,
   ): Promise<GraphQLSchemaWithContext<YogaDriverServerContext<'express'>>> {
     // Create a new contextId for each request

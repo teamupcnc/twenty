@@ -9,8 +9,8 @@ import { McpCoreController } from 'src/engine/api/mcp/controllers/mcp-core.contr
 import { type JsonRpc } from 'src/engine/api/mcp/dtos/json-rpc';
 import { McpAuthGuard } from 'src/engine/api/mcp/guards/mcp-auth.guard';
 import { McpProtocolService } from 'src/engine/api/mcp/services/mcp-protocol.service';
-import { type FlatApiKeyEntity } from 'src/engine/core-entity-cache/types/flat-api-key-entity.type';
-import { type FlatWorkspaceEntity } from 'src/engine/core-entity-cache/types/flat-workspace-entity.type';
+import { type FlatApiKey } from 'src/engine/core-entity-cache/types/flat-api-key.type';
+import { type FlatWorkspace } from 'src/engine/core-entity-cache/types/flat-workspace.type';
 import { AccessTokenService } from 'src/engine/core-modules/auth/token/services/access-token.service';
 import { HttpExceptionHandlerService } from 'src/engine/core-modules/exception-handler/http-exception-handler.service';
 import { TwentyConfigService } from 'src/engine/core-modules/twenty-config/twenty-config.service';
@@ -69,10 +69,10 @@ describe('McpCoreController', () => {
   });
 
   describe('handleMcpCore', () => {
-    const mockWorkspace = { id: 'workspace-1' } as FlatWorkspaceEntity;
+    const mockWorkspace = { id: 'workspace-1' } as FlatWorkspace;
     const mockUser = { id: 'user-1' } as UserEntity;
     const mockUserWorkspaceId = 'user-workspace-1';
-    const mockApiKey = { id: 'api-key-1' } as FlatApiKeyEntity;
+    const mockApiKey = { id: 'api-key-1' } as FlatApiKey;
     const mockRes = {
       status: jest.fn().mockReturnThis(),
     } as unknown as import('express').Response;

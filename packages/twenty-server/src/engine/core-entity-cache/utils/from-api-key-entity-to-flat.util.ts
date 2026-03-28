@@ -1,9 +1,9 @@
 import { type ApiKeyEntity } from 'src/engine/core-modules/api-key/api-key.entity';
-import { type FlatApiKeyEntity } from 'src/engine/core-entity-cache/types/flat-api-key-entity.type';
+import { type FlatApiKey } from 'src/engine/core-entity-cache/types/flat-api-key.type';
 
 export const fromApiKeyEntityToFlat = (
   entity: ApiKeyEntity,
-): FlatApiKeyEntity => ({
+): FlatApiKey => ({
   id: entity.id,
   name: entity.name,
   workspaceId: entity.workspaceId,

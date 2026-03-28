@@ -4,7 +4,7 @@ import { type ModelId } from 'src/engine/metadata-modules/ai/ai-models/types/mod
 
 // Manually defined to avoid ScalarFlatEntity issues
 // with WorkspaceEntity's complex relation graph
-export type FlatWorkspaceEntity = {
+export type FlatWorkspace = {
   id: string;
   displayName?: string;
   logo?: string;

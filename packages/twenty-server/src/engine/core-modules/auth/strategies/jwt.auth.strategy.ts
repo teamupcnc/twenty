@@ -25,7 +25,7 @@ import {
   JwtTokenTypeEnum,
   type WorkspaceAgnosticTokenJwtPayload,
 } from 'src/engine/core-modules/auth/types/auth-context.type';
-import { type FlatUserWorkspaceEntity } from 'src/engine/core-entity-cache/types/flat-user-workspace-entity.type';
+import { type FlatUserWorkspace } from 'src/engine/core-entity-cache/types/flat-user-workspace.type';
 import { CoreEntityCacheService } from 'src/engine/core-entity-cache/services/core-entity-cache.service';
 import { JwtWrapperService } from 'src/engine/core-modules/jwt/services/jwt-wrapper.service';
 import { UserWorkspaceEntity } from 'src/engine/core-modules/user-workspace/user-workspace.entity';
@@ -218,7 +218,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
     expectedWorkspaceId?: string;
   }): Promise<{
     user: AuthContextUser;
-    userWorkspace: FlatUserWorkspaceEntity;
+    userWorkspace: FlatUserWorkspace;
   } | null> {
     const user = await this.coreEntityCacheService.get(
       'authContextUser',

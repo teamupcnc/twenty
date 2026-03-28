@@ -5,7 +5,7 @@ import { type ToolSet } from 'ai';
 import { isDefined } from 'twenty-shared/utils';
 import { Repository } from 'typeorm';
 
-import { type FlatWorkspaceEntity } from 'src/engine/core-entity-cache/types/flat-workspace-entity.type';
+import { type FlatWorkspace } from 'src/engine/core-entity-cache/types/flat-workspace.type';
 import { fromAuthContextUserToFlat } from 'src/engine/core-entity-cache/utils/from-auth-context-user-to-flat.util';
 import { type ToolProviderContext } from 'src/engine/core-modules/tool-provider/interfaces/tool-provider.interface';
 
@@ -304,7 +304,7 @@ export class ToolExecutorService {
     }
 
     return buildUserAuthContext({
-      workspace: { id: context.workspaceId } as FlatWorkspaceEntity,
+      workspace: { id: context.workspaceId } as FlatWorkspace,
       userWorkspaceId: context.userWorkspaceId,
       user: fromAuthContextUserToFlat(user),
       workspaceMemberId,

@@ -19,7 +19,7 @@ import {
   SdkClientException,
   SdkClientExceptionCode,
 } from 'src/engine/core-modules/sdk-client/exceptions/sdk-client.exception';
-import { FlatWorkspaceEntity } from 'src/engine/core-entity-cache/types/flat-workspace-entity.type';
+import { FlatWorkspace } from 'src/engine/core-entity-cache/types/flat-workspace.type';
 import { WorkspaceCacheService } from 'src/engine/workspace-cache/services/workspace-cache.service';
 
 const SDK_CLIENT_ARCHIVE_NAME = 'twenty-client-sdk.zip';
@@ -46,7 +46,7 @@ export class SdkClientGenerationService {
     applicationUniversalIdentifier: string;
   }): Promise<Buffer> {
     const graphqlSchema = await this.workspaceSchemaFactory.createGraphQLSchema(
-      { id: workspaceId } as FlatWorkspaceEntity,
+      { id: workspaceId } as FlatWorkspace,
       applicationId,
     );
 

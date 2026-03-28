@@ -1,9 +1,9 @@
 import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
-import { type FlatWorkspaceEntity } from 'src/engine/core-entity-cache/types/flat-workspace-entity.type';
+import { type FlatWorkspace } from 'src/engine/core-entity-cache/types/flat-workspace.type';
 
 export const fromWorkspaceEntityToFlat = (
   entity: WorkspaceEntity,
-): FlatWorkspaceEntity => ({
+): FlatWorkspace => ({
   id: entity.id,
   displayName: entity.displayName,
   logo: entity.logo,

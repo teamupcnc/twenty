@@ -5,7 +5,7 @@ import {
 import { type EntityMetadata } from 'typeorm';
 
 import { type ResolverNameMapEntry } from 'src/engine/api/graphql/direct-execution/utils/build-resolver-name-map.util';
-import { type FlatApiKeyEntity } from 'src/engine/core-entity-cache/types/flat-api-key-entity.type';
+import { type FlatApiKey } from 'src/engine/core-entity-cache/types/flat-api-key.type';
 import { type ApplicationVariableCacheMaps } from 'src/engine/core-modules/application/application-variable/types/application-variable-cache-maps.type';
 import { type FlatApplicationCacheMaps } from 'src/engine/core-modules/application/types/flat-application-cache-maps.type';
 import { type FlatWorkspaceMemberMaps } from 'src/engine/core-modules/user/types/flat-workspace-member-maps.type';
@@ -63,7 +63,7 @@ export type AdditionalCacheDataMaps = {
   rolesPermissions: ObjectsPermissionsByRoleId;
   userWorkspaceRoleMap: UserWorkspaceRoleMap;
   apiKeyRoleMap: Record<string, string>;
-  apiKeyMap: Record<string, FlatApiKeyEntity>;
+  apiKeyMap: Record<string, FlatApiKey>;
   flatApplicationMaps: FlatApplicationCacheMaps;
   ORMEntityMetadatas: EntityMetadata[];
   flatRoleTargetByAgentIdMaps: FlatRoleTargetByAgentIdMaps;

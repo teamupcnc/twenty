@@ -292,10 +292,11 @@ export class WorkspaceService extends TypeOrmQueryService<WorkspaceEntity> {
       throw error;
     }
 
-    await this.coreEntityCacheService.invalidate(
-      'workspaceEntity',
-      workspace.id,
-    );
+    this.coreEntityCacheService
+      .invalidate('workspaceEntity', workspace.id)
+      .catch((err) => {
+        this.exceptionHandlerService.captureExceptions([err]);
+      });
 
     if (payload.logo === null && isDefined(workspace.logoFileId)) {
       await this.fileCorePictureService.deleteCorePicture({
@@ -332,10 +333,11 @@ export class WorkspaceService extends TypeOrmQueryService<WorkspaceEntity> {
       activationStatus: WorkspaceActivationStatus.ONGOING_CREATION,
     });
 
-    await this.coreEntityCacheService.invalidate(
-      'workspaceEntity',
-      workspace.id,
-    );
+    this.coreEntityCacheService
+      .invalidate('workspaceEntity', workspace.id)
+      .catch((err) => {
+        this.exceptionHandlerService.captureExceptions([err]);
+      });
 
     await this.featureFlagService.enableFeatureFlags(
       DEFAULT_FEATURE_FLAGS,
@@ -362,10 +364,11 @@ export class WorkspaceService extends TypeOrmQueryService<WorkspaceEntity> {
       version: extractVersionMajorMinorPatch(appVersion),
     });
 
-    await this.coreEntityCacheService.invalidate(
-      'workspaceEntity',
-      workspace.id,
-    );
+    this.coreEntityCacheService
+      .invalidate('workspaceEntity', workspace.id)
+      .catch((err) => {
+        this.exceptionHandlerService.captureExceptions([err]);
+      });
 
     return await this.workspaceRepository.findOneBy({
       id: workspace.id,

@@ -107,6 +107,13 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, 'jwt') {
       );
     }
 
+    if (new Date(apiKey.expiresAt) < new Date()) {
+      throw new AuthException(
+        'This API Key is expired',
+        AuthExceptionCode.FORBIDDEN_EXCEPTION,
+      );
+    }
+
     return { apiKey, workspace, workspaceMemberId: payload.workspaceMemberId };
   }
 

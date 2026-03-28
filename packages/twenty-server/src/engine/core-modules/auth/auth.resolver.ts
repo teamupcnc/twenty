@@ -10,7 +10,6 @@ import { assertIsDefinedOrThrow, isDefined } from 'twenty-shared/utils';
 import { Repository } from 'typeorm';
 
 import { MetadataResolver } from 'src/engine/api/graphql/graphql-config/decorators/metadata-resolver.decorator';
-import { fromUserEntityToFlat } from 'src/engine/core-modules/user/utils/from-user-entity-to-flat.util';
 import { ApiKeyService } from 'src/engine/core-modules/api-key/services/api-key.service';
 import { AppTokenEntity } from 'src/engine/core-modules/app-token/app-token.entity';
 import { AuditService } from 'src/engine/core-modules/audit/services/audit.service';
@@ -222,7 +221,7 @@ export class AuthResolver {
       availableWorkspaces:
         await this.userWorkspaceService.setLoginTokenToAvailableWorkspacesWhenAuthProviderMatch(
           availableWorkspaces,
-          fromUserEntityToFlat(user),
+          user,
           AuthProviderEnum.Password,
         ),
       tokens: {
@@ -322,7 +321,7 @@ export class AuthResolver {
       availableWorkspaces:
         await this.userWorkspaceService.setLoginTokenToAvailableWorkspacesWhenAuthProviderMatch(
           availableWorkspaces,
-          fromUserEntityToFlat(user),
+          user,
           authProvider,
         ),
       tokens: {
@@ -413,7 +412,7 @@ export class AuthResolver {
       availableWorkspaces:
         await this.userWorkspaceService.setLoginTokenToAvailableWorkspacesWhenAuthProviderMatch(
           availableWorkspaces,
-          fromUserEntityToFlat(user),
+          user,
           AuthProviderEnum.Password,
         ),
       tokens: {
@@ -513,8 +512,12 @@ export class AuthResolver {
     @AuthUser() currentUser: AuthContextUser,
     @AuthProvider() authProvider: AuthProviderEnum,
   ): Promise<SignUpDTO> {
+    const fullUser = await this.userService.findUserByIdOrThrow(
+      currentUser.id,
+    );
+
     const { user, workspace } = await this.signInUpService.signUpOnNewWorkspace(
-      { type: 'existingUser', existingUser: currentUser },
+      { type: 'existingUser', existingUser: fullUser },
     );
 
     const loginToken = await this.loginTokenService.generateLoginToken(

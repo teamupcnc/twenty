@@ -9,7 +9,6 @@ import { Repository, type DataSource, type QueryRunner } from 'typeorm';
 import { v4 } from 'uuid';
 
 import { USER_SIGNUP_EVENT_NAME } from 'src/engine/api/graphql/workspace-query-runner/constants/user-signup-event-name.constants';
-import { fromUserEntityToFlat } from 'src/engine/core-modules/user/utils/from-user-entity-to-flat.util';
 import { MAX_WORKSPACES_WITHOUT_ENTERPRISE_KEY } from 'src/engine/core-modules/auth/constants/max-workspaces-without-enterprise-key.constants';
 import { type AppTokenEntity } from 'src/engine/core-modules/app-token/app-token.entity';
 import { ApplicationService } from 'src/engine/core-modules/application/application.service';
@@ -22,7 +21,6 @@ import {
   compareHash,
   hashPassword,
 } from 'src/engine/core-modules/auth/auth.util';
-import { type AuthContextUser } from 'src/engine/core-modules/auth/types/auth-context.type';
 import {
   type AuthProviderWithPasswordType,
   type ExistingUserOrPartialUserWithPicture,
@@ -279,7 +277,7 @@ export class SignInUpService {
       });
 
       await this.activateOnboardingForUser({
-        user: fromUserEntityToFlat(user),
+        user,
         workspace: params.workspace,
         shouldShowConnectAccountStep: false,
       });
@@ -293,7 +291,7 @@ export class SignInUpService {
       return user;
     }
 
-    const userData = params.userData as unknown as {
+    const userData = params.userData as {
       type: 'existingUser';
       existingUser: UserEntity;
     };
@@ -315,7 +313,7 @@ export class SignInUpService {
       workspace,
       shouldShowConnectAccountStep,
     }: {
-      user: AuthContextUser;
+      user: Pick<UserEntity, 'id' | 'firstName' | 'lastName'>;
       workspace: WorkspaceEntity;
       shouldShowConnectAccountStep: boolean;
     },
@@ -579,9 +577,7 @@ export class SignInUpService {
 
       await this.activateOnboardingForUser(
         {
-          user: (typeof user.createdAt === 'string'
-            ? user
-            : fromUserEntityToFlat(user as UserEntity)) as AuthContextUser,
+          user,
           workspace,
           shouldShowConnectAccountStep: true,
         },

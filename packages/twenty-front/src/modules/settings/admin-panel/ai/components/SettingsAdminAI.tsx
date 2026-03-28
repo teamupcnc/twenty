@@ -22,6 +22,7 @@ import { type GetAiProvidersResult } from '@/settings/admin-panel/ai/types/GetAi
 import { getModelIcon } from '@/settings/admin-panel/ai/utils/getModelIcon';
 import { parseProviderItems } from '@/settings/admin-panel/ai/utils/parseProviderItems';
 import { SettingsAdminTabSkeletonLoader } from '@/settings/admin-panel/components/SettingsAdminTabSkeletonLoader';
+import { SettingsEnterpriseFeatureGateCard } from '@/settings/components/SettingsEnterpriseFeatureGateCard';
 import { SettingsOptionCardContentSelect } from '@/settings/components/SettingsOptions/SettingsOptionCardContentSelect';
 import { useUsageValueFormatter } from '@/settings/usage/hooks/useUsageValueFormatter';
 import { getPeriodDates } from '@/settings/usage/utils/getPeriodDates';
@@ -82,6 +83,7 @@ export const SettingsAdminAI = () => {
       periodStart: usageDates.periodStart,
       periodEnd: usageDates.periodEnd,
     },
+    skip: !hasEnterpriseAccess,
   });
 
   const effectiveUsageData = usageData ?? previousUsageData;
@@ -275,37 +277,43 @@ export const SettingsAdminAI = () => {
             )
           }
         />
-        {usageByWorkspace.length > 0 ? (
-          <Table>
-            <TableRow gridTemplateColumns={USAGE_TABLE_GRID_TEMPLATE_COLUMNS}>
-              <TableHeader>{t`Workspace`}</TableHeader>
-              <TableHeader align="right">{t`Usage`}</TableHeader>
-            </TableRow>
-            {usageByWorkspace.map((item) => (
-              <TableRow
-                key={item.key}
-                gridTemplateColumns={USAGE_TABLE_GRID_TEMPLATE_COLUMNS}
-              >
-                <TableCell color={themeCssVariables.font.color.primary}>
-                  {item.label ?? item.key}
-                </TableCell>
-                <TableCell align="right">
-                  {formatUsageValue(item.creditsUsed)}
+        {hasEnterpriseAccess ? (
+          usageByWorkspace.length > 0 ? (
+            <Table>
+              <TableRow gridTemplateColumns={USAGE_TABLE_GRID_TEMPLATE_COLUMNS}>
+                <TableHeader>{t`Workspace`}</TableHeader>
+                <TableHeader align="right">{t`Usage`}</TableHeader>
+              </TableRow>
+              {usageByWorkspace.map((item) => (
+                <TableRow
+                  key={item.key}
+                  gridTemplateColumns={USAGE_TABLE_GRID_TEMPLATE_COLUMNS}
+                >
+                  <TableCell color={themeCssVariables.font.color.primary}>
+                    {item.label ?? item.key}
+                  </TableCell>
+                  <TableCell align="right">
+                    {formatUsageValue(item.creditsUsed)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </Table>
+          ) : (
+            <Card rounded>
+              <TableRow gridTemplateColumns="1fr">
+                <TableCell
+                  color={themeCssVariables.font.color.tertiary}
+                  align="center"
+                >
+                  {t`No AI usage data recorded yet.`}
                 </TableCell>
               </TableRow>
-            ))}
-          </Table>
+            </Card>
+          )
         ) : (
-          <Card rounded>
-            <TableRow gridTemplateColumns="1fr">
-              <TableCell
-                color={themeCssVariables.font.color.tertiary}
-                align="center"
-              >
-                {t`No AI usage data recorded yet.`}
-              </TableCell>
-            </TableRow>
-          </Card>
+          <SettingsEnterpriseFeatureGateCard
+            description={t`AI usage analytics across workspaces is available with an Enterprise key.`}
+          />
         )}
       </Section>
     </>

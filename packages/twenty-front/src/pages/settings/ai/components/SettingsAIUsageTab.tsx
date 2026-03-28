@@ -7,7 +7,7 @@ import { getColorSchemeByIndex } from '@/page-layout/widgets/graph/utils/getColo
 import { WidgetComponentInstanceContext } from '@/page-layout/widgets/states/contexts/WidgetComponentInstanceContext';
 import { SettingsBillingLabelValueItem } from '@/settings/billing/components/internal/SettingsBillingLabelValueItem';
 import { SubscriptionInfoContainer } from '@/settings/billing/components/SubscriptionInfoContainer';
-import { SettingsOptionCardContentButton } from '@/settings/components/SettingsOptions/SettingsOptionCardContentButton';
+import { SettingsEnterpriseFeatureGateCard } from '@/settings/components/SettingsEnterpriseFeatureGateCard';
 import { UsagePieChart } from '@/settings/usage/components/UsagePieChart';
 import { useUsageValueFormatter } from '@/settings/usage/hooks/useUsageValueFormatter';
 import { getOperationTypeLabel } from '@/settings/usage/utils/getOperationTypeLabel';
@@ -27,17 +27,11 @@ import { useContext, useState } from 'react';
 import { SettingsPath } from 'twenty-shared/types';
 import { getSettingsPath } from 'twenty-shared/utils';
 import { Tag } from 'twenty-ui/components';
-import {
-  H2Title,
-  IconArrowUp,
-  IconChevronRight,
-  IconLock,
-} from 'twenty-ui/display';
-import { Button, SearchInput } from 'twenty-ui/input';
-import { Card, Section } from 'twenty-ui/layout';
+import { H2Title, IconChevronRight, IconLock } from 'twenty-ui/display';
+import { SearchInput } from 'twenty-ui/input';
+import { Section } from 'twenty-ui/layout';
 import { ThemeContext, themeCssVariables } from 'twenty-ui/theme-constants';
 import { GetUsageAnalyticsDocument } from '~/generated-metadata/graphql';
-import { useNavigateSettings } from '~/hooks/useNavigateSettings';
 import { formatDate } from '~/utils/date-utils';
 import { normalizeSearchText } from '~/utils/normalizeSearchText';
 
@@ -64,7 +58,6 @@ export const SettingsAIUsageTab = () => {
   const currentWorkspace = useAtomStateValue(currentWorkspaceState);
   const billing = useAtomStateValue(billingState);
   const isBillingEnabled = billing?.isBillingEnabled ?? false;
-  const navigateSettings = useNavigateSettings();
 
   const hasEnterpriseAccess =
     isBillingEnabled || currentWorkspace?.hasValidEnterpriseKey === true;
@@ -138,25 +131,9 @@ export const SettingsAIUsageTab = () => {
             />
           }
         />
-        <Card rounded>
-          <SettingsOptionCardContentButton
-            Icon={IconLock}
-            title={t`Enterprise feature`}
-            description={t`AI usage analytics is available with an Enterprise key.`}
-            Button={
-              <Button
-                title={t`Activate`}
-                variant="primary"
-                accent="blue"
-                size="small"
-                Icon={IconArrowUp}
-                onClick={() =>
-                  navigateSettings(SettingsPath.AdminPanelEnterprise)
-                }
-              />
-            }
-          />
-        </Card>
+        <SettingsEnterpriseFeatureGateCard
+          description={t`AI usage analytics is available with an Enterprise key.`}
+        />
       </Section>
     );
   }

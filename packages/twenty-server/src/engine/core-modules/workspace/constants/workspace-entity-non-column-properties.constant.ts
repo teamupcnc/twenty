@@ -1,6 +1,6 @@
 import { type WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
 
-export const WORKSPACE_ENTITY_RELATION_PROPERTIES = [
+export const WORKSPACE_ENTITY_NON_COLUMN_PROPERTIES = [
   'logoFile',
   'appTokens',
   'keyValuePairs',

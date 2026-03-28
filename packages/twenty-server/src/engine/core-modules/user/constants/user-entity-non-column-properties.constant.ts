@@ -1,6 +1,6 @@
 import { type UserEntity } from 'src/engine/core-modules/user/user.entity';
 
-export const USER_ENTITY_RELATION_PROPERTIES = [
+export const USER_ENTITY_NON_COLUMN_PROPERTIES = [
   'formatEmail',
   'appTokens',
   'keyValuePairs',

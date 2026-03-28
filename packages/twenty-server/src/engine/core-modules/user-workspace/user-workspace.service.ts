@@ -104,7 +104,10 @@ export class UserWorkspaceService extends TypeOrmQueryService<UserWorkspaceEntit
 
   async createWorkspaceMember(
     workspaceId: string,
-    user: Pick<UserEntity, 'id' | 'firstName' | 'lastName' | 'email' | 'locale'>,
+    user: Pick<
+      UserEntity,
+      'id' | 'firstName' | 'lastName' | 'email' | 'locale'
+    >,
   ) {
     const authContext = buildSystemAuthContext(workspaceId);
 

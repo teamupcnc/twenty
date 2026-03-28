@@ -512,9 +512,7 @@ export class AuthResolver {
     @AuthUser() currentUser: AuthContextUser,
     @AuthProvider() authProvider: AuthProviderEnum,
   ): Promise<SignUpDTO> {
-    const fullUser = await this.userService.findUserByIdOrThrow(
-      currentUser.id,
-    );
+    const fullUser = await this.userService.findUserByIdOrThrow(currentUser.id);
 
     const { user, workspace } = await this.signInUpService.signUpOnNewWorkspace(
       { type: 'existingUser', existingUser: fullUser },

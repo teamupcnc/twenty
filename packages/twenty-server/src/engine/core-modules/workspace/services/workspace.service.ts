@@ -590,6 +590,10 @@ export class WorkspaceService extends TypeOrmQueryService<WorkspaceEntity> {
         userWorkspaceId: userWorkspaceOfRemovedWorkspaceMember.id,
         softDelete,
       });
+      await this.coreEntityCacheService.invalidate(
+        'userWorkspaceEntity',
+        userWorkspaceOfRemovedWorkspaceMember.id,
+      );
     }
 
     const hasOtherUserWorkspaces = isDefined(
@@ -600,6 +604,7 @@ export class WorkspaceService extends TypeOrmQueryService<WorkspaceEntity> {
 
     if (!hasOtherUserWorkspaces) {
       await this.userRepository.softDelete(userId);
+      await this.coreEntityCacheService.invalidate('authContextUser', userId);
     }
   }
 

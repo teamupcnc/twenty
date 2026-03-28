@@ -26,6 +26,7 @@ import { DataSourceModule } from 'src/engine/metadata-modules/data-source/data-s
 import { ObjectMetadataEntity } from 'src/engine/metadata-modules/object-metadata/object-metadata.entity';
 import { PermissionsModule } from 'src/engine/metadata-modules/permissions/permissions.module';
 import { UserRoleModule } from 'src/engine/metadata-modules/user-role/user-role.module';
+import { CoreEntityCacheModule } from 'src/engine/core-entity-cache/core-entity-cache.module';
 import { WorkspaceCacheModule } from 'src/engine/workspace-cache/workspace-cache.module';
 
 import { userAutoResolverOpts } from './user.auto-resolver-opts';
@@ -56,6 +57,7 @@ import { UserService } from './services/user.service';
     EmailVerificationModule,
     WorkspaceDomainsModule,
     WorkspaceCacheModule,
+    CoreEntityCacheModule,
   ],
   exports: [UserService, WorkspaceMemberTranspiler],
   providers: [

@@ -73,6 +73,6 @@ services:
 
 databases:
   - name: teamup-twenty-db
-    plan: starter
+    plan: free
     databaseName: default
     ipAllowList: []

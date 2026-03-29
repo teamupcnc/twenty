@@ -41,10 +41,7 @@ services:
       - key: NODE_OPTIONS
         value: "--max-old-space-size=1024"
       - key: SERVER_URL
-        fromService:
-          type: web
-          name: teamup-twenty-server
-          envVarKey: SERVER_URL
+        sync: false
       - key: APP_SECRET
         fromService:
           type: web

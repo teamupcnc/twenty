@@ -2,7 +2,7 @@ services:
   - type: web
     name: teamup-twenty-server
     runtime: docker
-    plan: starter
+    plan: standard
     dockerfilePath: ./render/server.Dockerfile
     healthCheckPath: /healthz
     envVars:
@@ -10,6 +10,8 @@ services:
         value: "3000"
       - key: NODE_PORT
         value: "3000"
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=1024"
       - key: SERVER_URL
         sync: false
       - key: APP_SECRET
@@ -33,9 +35,11 @@ services:
   - type: worker
     name: teamup-twenty-worker
     runtime: docker
-    plan: starter
+    plan: standard
     dockerfilePath: ./render/worker.Dockerfile
     envVars:
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=1024"
       - key: SERVER_URL
         fromService:
           type: web
